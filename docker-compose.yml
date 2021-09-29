@@ -1,0 +1,48 @@
+version: '3'
+networks:
+  external:
+  internal:
+services:
+  nginx:
+    image: nginx:latest
+    expose:
+        - 80
+    labels:
+        - traefik.enable=true
+        - traefik.http.middlewares.dropgame_headers.headers.customrequestheaders.Origin=
+        - traefik.http.middlewares.dropgame_headers.headers.sslredirect=true
+        - traefik.http.middlewares.dropgame_redirect.redirectregex.permanent=true
+        - traefik.http.middlewares.dropgame_redirect.redirectregex.regex=^http://(.*)
+        - traefik.http.middlewares.dropgame_redirect.redirectregex.replacement=https://$$1
+        - traefik.http.routers.dropgame.entrypoints=web
+        - traefik.http.routers.dropgame.middlewares=dropgame_headers@docker
+        - traefik.http.routers.dropgame.rule=HostHeader(`dropgame.oddnetwork.org`)
+        - traefik.http.routers.dropgame.tls=true
+        - traefik.http.routers.dropgame_redirect.entrypoints=web
+        - traefik.http.routers.dropgame_redirect.middlewares=dropgame_redirect@docker
+        - traefik.http.routers.dropgame_redirect.rule=HostHeader(`dropgame.oddnetwork.org`)
+        - traefik.http.services.dropgame.loadbalancer.sticky=true
+        - traefik.http.services.dropgame.loadbalancer.sticky.cookie.httponly=true
+        - traefik.http.services.dropgame.loadbalancer.sticky.cookie.secure=true
+    networks:
+        - external
+        - internal
+    volumes:
+        - ./drop-game/static:/usr/share/nginx/html
+  traefik:
+    command:
+      - --api.insecure=true
+      - --entrypoints.web.address=:80
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=dropgame_external
+    depends_on:
+      - nginx
+    image: traefik:latest
+    ports:
+      - 5001:80
+      - 5002:8080
+    networks:
+      - external
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
