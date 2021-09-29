@@ -37,11 +37,11 @@ class Game extends Phaser.Scene {
 						.setOrigin(0, 0)
 						.setAlpha(0.5);
 
-					const halfPad = Math.ceil(this.pad.body.width / 2);
-					const halfDop = Math.ceil(this.dop.body.width / 2);
+					const halfPad = Math.ceil(this.pad.width / 2);
+					const halfDop = Math.ceil(this.dop.width / 2);
 					const total = halfPad + halfDop;
 					const pos = Math.abs(
-						this.dop.getCenter().x - this.pad.getCenter().x);
+						(this.dop.x + halfDop) - (this.pad.x + halfPad));
 					const score = (total - pos) / total * 100;
 
 					console.log(score);
@@ -60,7 +60,7 @@ class Game extends Phaser.Scene {
 	update(time, delta) {
 		if (this.dop == undefined) return;
 
-		//this.pad.x = this.dop.getCenter().x + (this.dop.body.width / 2);
+		//this.pad.x = this.dop.getCenter().x + (this.dop.width / 2);
 
 		if (this.dop.y > 0
 			&& Phaser.Math.Fuzzy.LessThan(this.dop.body.velocity.y, 0, 0.1))
