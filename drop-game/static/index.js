@@ -1,3 +1,5 @@
+import WebFontFile from './webfontfile.js';
+
 const GRAVITY = 60;
 
 const qs = Object.fromEntries(
@@ -31,6 +33,7 @@ class Game extends Phaser.Scene {
 	}
 
 	preload() {
+		this.load.addFile(new WebFontFile(this.load, 'Syne Mono'));;
 		this.load.setBaseURL('/assets');
 		this.load.image('drop', 'drop.png');
 		this.load.image('pad', 'pad.png');
@@ -80,9 +83,8 @@ class Game extends Phaser.Scene {
 
 					const label = this.add.text(0, 0, score,
 						{
-							fontFamily: 'Unifont, "Ubuntu Sans Mono", monospace',
+							fontFamily: '"Syne Mono"',
 							fontSize: 26,
-							fontStyle: 'bold',
 							stroke: '#000',
 							strokeThickness: 1,
 						});
