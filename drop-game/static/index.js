@@ -62,6 +62,39 @@ class Game extends Phaser.Scene {
 			.setCollideWorldBounds(true)
 			.setMaxVelocity(1000, GRAVITY)
 			.setVelocity(velocity, 0);
+		this.collider = this.physics.add.collider(
+			this.drop,
+			this.pad,
+			(drop, pad) => {
+				if (drop.body.touching.down && pad.body.touching.up) {
+					this.add.image(this.drop.x, this.drop.y, 'drop')
+						.setOrigin(0, 0)
+						.setAlpha(0.5);
+
+					const halfPad = Math.ceil(this.pad.width / 2);
+					const halfDop = Math.ceil(this.drop.width / 2);
+					const total = halfPad + halfDop;
+					const pos = Math.abs(
+						(this.drop.x + halfDop) - (this.pad.x + halfPad));
+					const score = ((total - pos) / total * 100).toFixed(2);
+
+					const label = this.add.text(0, 0, score,
+						{
+							fontFamily: 'Unifont, "Ubuntu Sans Mono", monospace',
+							fontSize: 26,
+							fontStyle: 'bold',
+							stroke: '#000',
+							strokeThickness: 1,
+						});
+
+					label.x = this.drop.getCenter().x - label.width / 2;
+					label.y = this.drop.y + this.drop.height - label.height;
+
+					console.log(score);
+					this.drop.destroy();
+					delete this.drop;
+				}
+			});
 	}
 }
 
