@@ -1,4 +1,6 @@
-body, html {
+@import url('https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap');
+
+body {
 	background-color: #555;
 	height: 1080px;
 	margin: 0;
