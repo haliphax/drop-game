@@ -1,4 +1,4 @@
 certs/
 docker-compose.override.yml
+drop-game/static/tmi.min.js
 providers.traefik.conf
-tmi.min.js
