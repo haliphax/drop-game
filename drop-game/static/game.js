@@ -28,9 +28,10 @@ export default class Game extends Phaser.Scene {
 		this.pad
 			.setMaxVelocity(0, 0)
 			.setOrigin(0, 0)
-			.setScale(2)
+			.setScale(constants.PAD_SCALE)
 			.setVisible(false)
-			.setPosition(0, constants.SCREEN_HEIGHT - this.pad.height * 2);
+			.setPosition(
+				0, constants.SCREEN_HEIGHT - this.pad.height * constants.PAD_SCALE);
 
 		setTimeout(this.ready.bind(this), 100);
 	}
@@ -77,7 +78,7 @@ export default class Game extends Phaser.Scene {
 		this.droppers = {};
 		this.winner = null;
 		this.pad.x = Math.random()
-			* (constants.SCREEN_WIDTH - (this.pad.width * 2));
+			* (constants.SCREEN_WIDTH - (this.pad.width * constants.PAD_SCALE));
 		this.pad.setVisible(true);
 	}
 

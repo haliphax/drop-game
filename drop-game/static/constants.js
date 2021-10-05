@@ -5,6 +5,8 @@ export default {
 	GRAVITY: 150,
 	/** default force of gravity with chute */
 	GRAVITY_CHUTE: 50,
+	/** scale of pad image */
+	PAD_SCALE: 2,
 	/** height of screen */
 	SCREEN_HEIGHT: 1080,
 	/** width of screen */
