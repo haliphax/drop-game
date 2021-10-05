@@ -9,6 +9,7 @@ export default class Game extends Phaser.Scene {
 		super();
 		this.sinceDrop = 0;
 		this.droppers = {};
+		this.dropGroup = null;
 		this.winner = null;
 		this.active = false;
 		this.endTimer = false;
@@ -20,20 +21,29 @@ export default class Game extends Phaser.Scene {
 		this.physics.world.setBounds(0, 0, 1920, 1080);
 		this.pad = this.physics.add.image(0, 0, 'pad');
 		this.pad
+			.setMaxVelocity(0, 0)
 			.setOrigin(0, 0)
 			.setScale(2)
 			.setVisible(false)
 			.setPosition(0, 1080 - this.pad.height * 2);
 
-		function setPadBody() {
-			if (this.pad.body == undefined) return setTimeout(setPadBody, 100);
-			this.pad.setMaxVelocity(0, 0);
-			this.pad.body.allowGravity = false;
-			this.pad.body.immovable = true;
-			this.pad.body.setSize(this.pad.width, this.pad.height, true);
-		}
+		setTimeout(this.ready.bind(this), 100);
+	}
 
-		setTimeout(setPadBody.bind(this), 100);
+	ready() {
+		if (this.pad.body == undefined)
+			return setTimeout(this.ready.bind(this), 100);
+
+		this.dropGroup = this.physics.add.group({
+			bounceX: 1,
+			bounceY: 1,
+			collideWorldBounds: true,
+		});
+		this.physics.add.collider(this.dropGroup);
+
+		this.pad.body.immovable = false;
+		this.pad.body.allowGravity = false;
+		this.pad.body.setSize(this.pad.width, this.pad.height, true);
 	}
 
 	preload() {
@@ -76,8 +86,10 @@ export default class Game extends Phaser.Scene {
 			return;
 		}
 
-		this.droppers[username] = new Avatar(username, this);
+		const avatar = new Avatar(username, this);
+		this.droppers[username] = avatar;
 
+		this.dropGroup.add(avatar.sprite);
 		clearTimeout(this.endTimer);
 		this.endTimer = setTimeout(
 			this.end.bind(this),

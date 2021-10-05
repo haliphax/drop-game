@@ -20,8 +20,6 @@ export default class Avatar {
 
 		this.sprite
 			.setOrigin(0, 0)
-			.setBounce(1)
-			.setCollideWorldBounds(true)
 			.setMaxVelocity(1000, constants.GRAVITY)
 			.setVisible(false);
 
