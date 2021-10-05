@@ -33,8 +33,7 @@ export default class Avatar {
 		if (this.sprite.body == undefined)
 			return setTimeout(this.ready.bind(this, game), 100);
 
-		const direction = Math.random() <= 0.5 ? -1 : 1;
-		const velocity = Math.random() * 1000 * direction;
+		const direction = Math.random() < 0.5 ? -1 : 1;
 
 		this.sprite.body.velocity.x = velocity;
 		this.sprite.body.setSize(this.sprite.width, this.sprite.height, true);
