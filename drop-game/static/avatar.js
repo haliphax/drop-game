@@ -72,11 +72,8 @@ export default class Avatar {
 			.setOrigin(0, 0)
 			.setAlpha(0.25);
 		orig.destroy();
-
-		if (this.scoreLabel !== null) {
-			this.scoreLabel.destroy();
-			this.scoreLabel = null;
-		}
+		this.scoreLabel?.destroy();
+		this.scoreLabel = null;
 	}
 
 	winner() {

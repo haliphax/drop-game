@@ -86,8 +86,8 @@ export default class Game extends Phaser.Scene {
 
 		for (let drop of this.droppersArray) {
 			drop.sprite.destroy();
-			if (drop.scoreLabel) drop.scoreLabel.destroy();
-			if (drop.label) drop.label.destroy();
+			drop.scoreLabel?.destroy();
+			drop.label?.destroy();
 		}
 	}
 
