@@ -102,7 +102,7 @@ export default class Avatar {
 				strokeThickness: 4,
 			});
 		this.scoreLabel.setPosition(
-			this.sprite.getCenter().x - this.scoreLabel.width / 2,
+			this.sprite.getCenter().x - (this.scoreLabel.width / 2),
 			this.sprite.y + this.sprite.height - this.scoreLabel.height);
 		emitter.emit('score', this);
 	}
