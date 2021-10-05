@@ -23,7 +23,7 @@ export default class Game extends Phaser.Scene {
 	create() {
 		this.physics.world
 			.setBounds(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
-			.setBoundsCollision(true, true, true, false);
+			.setBoundsCollision(true, true, false, false);
 		this.pad = this.physics.add.image(0, 0, 'pad');
 		this.pad
 			.setMaxVelocity(0, 0)
