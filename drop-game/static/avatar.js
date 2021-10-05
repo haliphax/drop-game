@@ -44,6 +44,9 @@ export default class Avatar {
 	update() {
 		if (!this.sprite.body) return;
 
+		if (this.sprite.getBottomRight().y >= constants.SCREEN_HEIGHT)
+			return this.loser();
+
 		if (this.chute)
 			this.sprite.body.velocity.y = this.chuteGravity;
 		else if (this.sprite.body.y >= this.sprite.body.height)

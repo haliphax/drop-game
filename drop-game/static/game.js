@@ -11,6 +11,7 @@ export default class Game extends Phaser.Scene {
 		this.active = false;
 		this.dropGroup = null;
 		this.droppers = {};
+		this.droppersArray = [];
 		this.endTimer = false;
 		this.endWait = (qs.wait || constants.WAIT_FOR_RESET) * 1000;
 		this.winner = null;
@@ -65,17 +66,14 @@ export default class Game extends Phaser.Scene {
 	}
 
 	update(time, delta) {
-		for (let drop of Object.values(this.droppers).filter(v => v.active)) {
-			drop.update();
-
-			if (drop.sprite.getBottomRight().y >= constants.SCREEN_HEIGHT)
-				drop.loser();
-		}
+		for (let drop of this.droppersArray)
+			if (drop.active) drop.update();
 	}
 
 	start() {
 		this.active = true;
 		this.droppers = {};
+		this.droppersArray = [];
 		this.winner = null;
 		this.pad.x = Math.random()
 			* (constants.SCREEN_WIDTH - (this.pad.width * constants.PAD_SCALE));
@@ -86,7 +84,7 @@ export default class Game extends Phaser.Scene {
 		this.active = false;
 		this.pad.setVisible(false);
 
-		for (let drop of Object.values(this.droppers)) {
+		for (let drop of this.droppersArray) {
 			drop.sprite.destroy();
 			if (drop.scoreLabel) drop.scoreLabel.destroy();
 			if (drop.label) drop.label.destroy();
@@ -103,6 +101,7 @@ export default class Game extends Phaser.Scene {
 
 		const avatar = new Avatar(username, this);
 		this.droppers[username] = avatar;
+		this.droppersArray.push(avatar);
 		this.dropGroup.add(avatar.sprite);
 		clearTimeout(this.endTimer);
 		this.endTimer = setTimeout(this.end.bind(this), this.endWait);
