@@ -13,7 +13,9 @@ export default class Avatar {
 				stroke: '#000',
 				strokeThickness: 4,
 			});
-		this.sprite = game.physics.add.image(0, 0, 'drop');
+		this.sprite = game.physics.add.image(0, 0, 'drop')
+			.setOrigin(0, 0)
+			.setVisible(false);
 		this.sprite.avatar = this;
 		this.labelOffset = this.sprite.width / 2 - this.label.width / 2;
 		this.chute = false;
@@ -21,10 +23,6 @@ export default class Avatar {
 		this.scoreLabel = null;
 		this.score = -1;
 		this.active = true;
-
-		this.sprite
-			.setOrigin(0, 0)
-			.setVisible(false);
 
 		setTimeout(this.ready.bind(this, game), 100);
 	}
