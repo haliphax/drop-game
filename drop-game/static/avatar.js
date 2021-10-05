@@ -13,6 +13,7 @@ export default class Avatar {
 				strokeThickness: 2,
 			});
 		this.sprite = game.physics.add.image(0, 0, 'drop');
+		this.sprite.avatar = this;
 		this.labelOffset = this.sprite.width / 2 - this.label.width / 2;
 		this.scoreLabel = null;
 		this.score = -1;
@@ -38,14 +39,6 @@ export default class Avatar {
 		this.sprite.x = Math.random()
 			* (constants.SCREEN_WIDTH - this.sprite.width);
 		this.sprite.visible = true;
-
-		this.game.physics.add.collider(
-			this.sprite,
-			this.game.pad,
-			(drop, pad) => {
-				if (drop.body.touching.down && pad.body.touching.up)
-					this.winner();
-			});
 	}
 
 	update() {

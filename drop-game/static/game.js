@@ -45,6 +45,11 @@ export default class Game extends Phaser.Scene {
 		this.pad.body.immovable = false;
 		this.pad.body.allowGravity = false;
 		this.pad.body.setSize(this.pad.width, this.pad.height, true);
+		this.physics.add.collider(this.pad, this.dropGroup,
+			(pad, drop) => {
+				if (drop.body.touching.down && pad.body.touching.up)
+					drop.avatar.winner();
+			});
 	}
 
 	preload() {
