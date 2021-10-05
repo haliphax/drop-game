@@ -10,7 +10,7 @@ const game = new Phaser.Game({
 		arcade: {
 			debug: false,
 			gravity: {
-				y: constants.GRAVITY,
+				y: (qs.gravity || constants.GRAVITY),
 			},
 		},
 	},

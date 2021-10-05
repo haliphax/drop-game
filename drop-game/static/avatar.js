@@ -1,5 +1,6 @@
 import constants from './constants.js';
 import emitter from './emitter.js';
+import qs from './querystring.js';
 
 export default class Avatar {
 	constructor(username, game) {
@@ -15,13 +16,14 @@ export default class Avatar {
 		this.sprite = game.physics.add.image(0, 0, 'drop');
 		this.sprite.avatar = this;
 		this.labelOffset = this.sprite.width / 2 - this.label.width / 2;
+		this.chute = false;
+		this.chuteGravity = parseInt(qs.gravity_chute || constants.GRAVITY_CHUTE);
 		this.scoreLabel = null;
 		this.score = -1;
 		this.active = true;
 
 		this.sprite
 			.setOrigin(0, 0)
-			.setMaxVelocity(1000, constants.GRAVITY)
 			.setVisible(false);
 
 		setTimeout(this.ready.bind(this, game), 100);
@@ -43,6 +45,11 @@ export default class Avatar {
 
 	update() {
 		if (!this.sprite.body) return;
+
+		if (this.chute)
+			this.sprite.body.velocity.y = this.chuteGravity;
+		else if (this.sprite.body.y >= this.sprite.body.height)
+			this.chute = true;
 
 		this.label.setPosition(
 			this.sprite.body.x + this.labelOffset,
