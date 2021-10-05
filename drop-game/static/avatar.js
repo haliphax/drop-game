@@ -63,10 +63,11 @@ export default class Avatar {
 	}
 
 	loser() {
+		const orig = this.sprite;
+
 		this.land();
 		this.label.destroy();
 		this.label = null;
-		const orig = this.sprite;
 		this.sprite = this.game.add.image(this.sprite.x, this.sprite.y, 'drop')
 			.setOrigin(0, 0)
 			.setAlpha(0.25);
