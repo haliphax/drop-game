@@ -10,7 +10,7 @@ export default class Avatar {
 				fontFamily: '"Syne Mono"',
 				fontSize: 18,
 				stroke: '#000',
-				strokeThickness: 2,
+				strokeThickness: 4,
 			});
 		this.sprite = game.physics.add.image(0, 0, 'drop');
 		this.sprite.avatar = this;
@@ -92,7 +92,7 @@ export default class Avatar {
 				fontFamily: '"Syne Mono"',
 				fontSize: 26,
 				stroke: '#000',
-				strokeThickness: 2,
+				strokeThickness: 4,
 			});
 		this.scoreLabel.setPosition(
 			this.sprite.getCenter().x - this.scoreLabel.width / 2,
