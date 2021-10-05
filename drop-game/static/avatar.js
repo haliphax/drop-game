@@ -35,7 +35,8 @@ export default class Avatar {
 
 		this.sprite.body.velocity.x = velocity;
 		this.sprite.body.setSize(this.sprite.width, this.sprite.height, true);
-		this.sprite.x = Math.random() * (1920 - this.sprite.width);
+		this.sprite.x = Math.random()
+			* (constants.SCREEN_WIDTH - this.sprite.width);
 		this.sprite.visible = true;
 
 		this.game.physics.add.collider(
