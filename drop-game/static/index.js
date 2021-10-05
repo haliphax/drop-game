@@ -3,13 +3,6 @@ import emitter from './emitter.js';
 import Game from './game.js';
 import qs from './querystring.js';
 
-const twitch = new tmi.Client({
-	channels: [qs.channel],
-	identity: {
-		username: qs.username,
-		password: `oauth:${qs.oauth}`,
-	},
-});
 const game = new Phaser.Game({
 	height: constants.SCREEN_HEIGHT,
 	physics: {
@@ -30,7 +23,16 @@ const game = new Phaser.Game({
 	width: constants.SCREEN_WIDTH,
 });
 
+const twitch = new tmi.Client({
+	channels: [qs.channel],
+	identity: {
+		username: qs.username,
+		password: `oauth:${qs.oauth}`,
+	},
+});
+
 const commandRgx = /^(\![-_.a-z0-9]+)(?:\s+(.+))?$/i;
+
 twitch.on('message', (channel, tags, message, self) => {
 	const cmd = commandRgx.exec(message);
 
