@@ -13,7 +13,6 @@ export default class Game extends Phaser.Scene {
 		this.droppers = {};
 		this.endTimer = false;
 		this.endWait = (qs.wait || 60) * 1000;
-		this.sinceDrop = 0;
 		this.winner = null;
 
 		emitter.on('drop', this.onDrop, this);
