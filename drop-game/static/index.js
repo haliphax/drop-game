@@ -11,7 +11,7 @@ const twitch = new tmi.Client({
 	},
 });
 const game = new Phaser.Game({
-	height: 1080,
+	height: constants.SCREEN_HEIGHT,
 	physics: {
 		default: 'arcade',
 		arcade: {
@@ -27,7 +27,7 @@ const game = new Phaser.Game({
 	},
 	scene: [Game],
 	type: Phaser.AUTO,
-	width: 1920,
+	width: constants.SCREEN_WIDTH,
 });
 
 const commandRgx = /^(\![-_.a-z0-9]+)(?:\s+(.+))?$/i;
