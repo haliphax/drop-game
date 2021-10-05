@@ -27,6 +27,12 @@ export default class Avatar {
 		setTimeout(this.ready.bind(this, game), 100);
 	}
 
+	// private
+	_land() {
+		this.active = false;
+		emitter.emit('land', this);
+	}
+
 	ready() {
 		if (this.sprite.body == undefined)
 			return setTimeout(this.ready.bind(this, game), 100);
@@ -57,15 +63,10 @@ export default class Avatar {
 			this.sprite.body.y - this.label.height - 2);
 	}
 
-	land() {
-		this.active = false;
-		emitter.emit('land', this);
-	}
-
 	loser() {
 		const orig = this.sprite;
 
-		this.land();
+		this._land();
 		this.label.destroy();
 		this.label = null;
 		this.sprite = this.game.add.image(this.sprite.x, this.sprite.y, 'drop')
@@ -84,7 +85,7 @@ export default class Avatar {
 			this.sprite.getCenter().x - this.game.pad.getCenter().x);
 		const orig = this.sprite;
 
-		this.land();
+		this._land();
 		this.score = ((total - pos) / total * 100).toFixed(2);
 		this.sprite =
 			this.game.add.image(
