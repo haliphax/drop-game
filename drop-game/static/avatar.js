@@ -51,7 +51,6 @@ export default class Avatar {
 	update() {
 		if (!this.sprite.body) return;
 
-		this.game.pad.x = this.sprite.x;
 		this.label.setPosition(
 			this.sprite.body.x + this.labelOffset,
 			this.sprite.body.y - this.label.height - 2);
