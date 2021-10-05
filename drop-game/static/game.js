@@ -74,6 +74,7 @@ export default class Game extends Phaser.Scene {
 	start() {
 		this.active = true;
 		this.droppers = {};
+		this.winner = null;
 		this.pad.x = Math.random()
 			* (constants.SCREEN_WIDTH - (this.pad.width * 2));
 		this.pad.setVisible(true);
