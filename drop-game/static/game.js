@@ -111,14 +111,11 @@ export default class Game extends Phaser.Scene {
 	}
 
 	onScore(avatar) {
-		if (this.winner !== null && avatar.score <= this.winner.score)
+		if (this.winner && avatar.score <= this.winner.score)
 			return avatar.loser();
 
-		for (let drop of Object.values(this.droppers)
-			.filter(v => v.username != avatar.username && v.score >= 0))
-		{
-			drop.loser();
-		}
+		if (this.winner)
+			this.winner.loser();
 
 		this.winner = avatar;
 	}
