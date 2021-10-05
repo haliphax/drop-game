@@ -1,23 +1,27 @@
+import Avatar from './avatar.js';
 import constants from './constants.js';
 import emitter from './emitter.js';
-import Avatar from './avatar.js';
+import qs from './querystring.js';
 import WebFontFile from './webfontfile.js';
 
 /** main game scene */
 export default class Game extends Phaser.Scene {
 	constructor() {
 		super();
-		this.sinceDrop = 0;
-		this.droppers = {};
-		this.dropGroup = null;
-		this.winner = null;
 		this.active = false;
+		this.dropGroup = null;
+		this.droppers = {};
 		this.endTimer = false;
+		this.endWait = (qs.wait || 60) * 1000;
+		this.sinceDrop = 0;
+		this.winner = null;
+
+		emitter.on('drop', this.onDrop, this);
+		emitter.on('land', this.onLand, this);
+		emitter.on('score', this.onScore, this);
 	}
 
 	create() {
-		emitter.on('drop', this.onDrop, this);
-		emitter.on('score', this.onScore, this);
 		this.physics.world.setBounds(
 			0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT);
 		this.pad = this.physics.add.image(0, 0, 'pad');
@@ -42,7 +46,7 @@ export default class Game extends Phaser.Scene {
 		});
 		this.physics.add.collider(this.dropGroup);
 
-		this.pad.body.immovable = false;
+		this.pad.body.immovable = true;
 		this.pad.body.allowGravity = false;
 		this.pad.body.setSize(this.pad.width, this.pad.height, true);
 		this.physics.add.collider(this.pad, this.dropGroup,
@@ -97,12 +101,13 @@ export default class Game extends Phaser.Scene {
 
 		const avatar = new Avatar(username, this);
 		this.droppers[username] = avatar;
-
 		this.dropGroup.add(avatar.sprite);
 		clearTimeout(this.endTimer);
-		this.endTimer = setTimeout(
-			this.end.bind(this),
-			constants.WAIT_UNTIL_RESET);
+		this.endTimer = setTimeout(this.end.bind(this), this.endWait);
+	}
+
+	onLand(avatar) {
+		this.dropGroup.remove(avatar.sprite);
 	}
 
 	onScore(avatar) {

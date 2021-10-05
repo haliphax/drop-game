@@ -1,9 +1,8 @@
 import constants from './constants.js';
 import emitter from './emitter.js';
 import Game from './game.js';
+import qs from './querystring.js';
 
-const qs = Object.fromEntries(
-	window.location.href.split('?')[1].split('&').map(v => v.split('=')));
 const twitch = new tmi.Client({
 	channels: [qs.channel],
 	identity: {

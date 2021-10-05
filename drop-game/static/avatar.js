@@ -49,8 +49,13 @@ export default class Avatar {
 			this.sprite.body.y - this.label.height - 2);
 	}
 
-	loser() {
+	land() {
 		this.active = false;
+		emitter.emit('land', this);
+	}
+
+	loser() {
+		this.land();
 		this.label.destroy();
 		this.label = null;
 		const orig = this.sprite;
@@ -73,6 +78,7 @@ export default class Avatar {
 			this.sprite.getCenter().x - this.game.pad.getCenter().x);
 		const orig = this.sprite;
 
+		this.land();
 		this.score = ((total - pos) / total * 100).toFixed(2);
 		this.sprite =
 			this.game.add.image(
@@ -91,7 +97,6 @@ export default class Avatar {
 		this.scoreLabel.setPosition(
 			this.sprite.getCenter().x - this.scoreLabel.width / 2,
 			this.sprite.y + this.sprite.height - this.scoreLabel.height);
-		this.active = false;
 		emitter.emit('score', this);
 	}
 }
