@@ -30,11 +30,20 @@ const game = new Phaser.Game({
 	width: 1920,
 });
 
-const dropCommandRgx = /^\!drop(?:\s*([^ ]+)?)$/i;
+const commandRgx = /^(\![-_.a-z0-9]+)(?:\s+(.+))?$/i;
 twitch.on('message', (channel, tags, message, self) => {
-	if (self || !dropCommandRgx.exec(message)) return;
+	const cmd = commandRgx.exec(message);
 
-	emitter.emit('drop', tags['display-name']);
+	if (self || !cmd) return;
+
+	const command = cmd[1].toLowerCase().substring(1);
+	const args = cmd[2];
+
+	switch (command) {
+		case 'drop':
+			emitter.emit('drop', tags['display-name']);
+			break;
+	}
 });
 
 twitch.connect();
