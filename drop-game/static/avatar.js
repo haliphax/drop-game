@@ -14,7 +14,7 @@ export default class Avatar {
 				strokeThickness: 4,
 			});
 		this.sprite = game.physics.add.image(0, 0, 'drop')
-			.setOrigin(0, 0)
+			.setOrigin(0.5, 0.5)
 			.setVisible(false);
 		this.sprite.avatar = this;
 		this.labelOffset = this.sprite.width / 2 - this.label.width / 2;
@@ -22,6 +22,7 @@ export default class Avatar {
 		this.chuteGravity = parseInt(qs.gravity_chute || constants.GRAVITY_CHUTE);
 		this.scoreLabel = null;
 		this.score = -1;
+		this.swayDirection = -1;
 		this.active = true;
 
 		setTimeout(this.ready.bind(this, game), 100);
@@ -53,8 +54,17 @@ export default class Avatar {
 		if (this.sprite.getBottomRight().y >= constants.SCREEN_HEIGHT)
 			return this.loser();
 
-		if (this.chute)
+		if (this.chute) {
 			this.sprite.body.velocity.y = this.chuteGravity;
+
+			if (this.sprite.angle > constants.MAX_SWAY
+				|| this.sprite.angle < -constants.MAX_SWAY)
+			{
+				this.swayDirection = 0 - this.swayDirection;
+			}
+
+			this.sprite.angle += (this.swayDirection / 2);
+		}
 		else if (this.sprite.body.y >= this.sprite.body.height)
 			this.chute = true;
 
@@ -70,7 +80,7 @@ export default class Avatar {
 		this.label.destroy();
 		this.label = null;
 		this.sprite = this.game.add.image(this.sprite.x, this.sprite.y, 'drop')
-			.setOrigin(0, 0)
+			.setOrigin(0.5, 0.5)
 			.setAlpha(0.25);
 		orig.destroy();
 		this.scoreLabel?.destroy();
@@ -91,7 +101,7 @@ export default class Avatar {
 			this.game.add.image(
 				this.sprite.x,
 				this.sprite.y, 'drop')
-			.setOrigin(0, 0);
+			.setOrigin(0.5, 0.5);
 		orig.destroy();
 
 		this.scoreLabel = this.game.add.text(0, 0, this.score,
