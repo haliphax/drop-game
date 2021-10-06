@@ -2,7 +2,7 @@ import constants from './constants.js';
 import emitter from './emitter.js';
 import Game from './game.js';
 import qs from './querystring.js';
-import { isModerator, isBroadcaster, twitch } from './twitch.js';
+import { isBroadcaster, isModerator, twitch } from './twitch.js';
 
 const game = new Phaser.Game({
 	height: constants.SCREEN_HEIGHT,
