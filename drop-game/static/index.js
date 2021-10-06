@@ -44,6 +44,12 @@ twitch.on('message', (channel, tags, message, self) => {
 
 			emitter.emit('queuedrop', args ? parseInt(args) : null);
 			break;
+		case 'resetdrop':
+			if (!isBroadcaster(tags) && !isModerator(tags))
+				return;
+
+			emitter.emit('resetdrop');
+			break;
 		case 'startdrop':
 			if (!isBroadcaster(tags) && !isModerator(tags))
 				return;

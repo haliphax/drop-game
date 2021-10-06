@@ -22,6 +22,7 @@ export default class Game extends Phaser.Scene {
 		emitter.on('drop', this.onDrop, this);
 		emitter.on('land', this.onLand, this);
 		emitter.on('queuedrop', this.onQueueDrop, this);
+		emitter.on('resetdrop', this.onResetDrop, this);
 		emitter.on('score', this.onScore, this);
 		emitter.on('startdrop', this.onStartDrop, this);
 	}
@@ -147,6 +148,10 @@ export default class Game extends Phaser.Scene {
 			setTimeout(this.resolveQueue.bind(this), delay * 1000);
 
 		twitch.say(qs.channel, 'Queue started!');
+	}
+
+	onResetDrop() {
+		this.end();
 	}
 
 	onStartDrop() {
