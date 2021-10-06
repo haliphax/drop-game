@@ -2,6 +2,7 @@ import constants from './constants.js';
 import emitter from './emitter.js';
 import Game from './game.js';
 import qs from './querystring.js';
+import { isModerator, isBroadcaster, twitch } from './twitch.js';
 
 const game = new Phaser.Game({
 	height: constants.SCREEN_HEIGHT,
@@ -23,14 +24,6 @@ const game = new Phaser.Game({
 	width: constants.SCREEN_WIDTH,
 });
 
-const twitch = new tmi.Client({
-	channels: [qs.channel],
-	identity: {
-		username: qs.username,
-		password: `oauth:${qs.oauth}`,
-	},
-});
-
 const commandRgx = /^(\![-_.a-z0-9]+)(?:\s+(.+))?$/i;
 
 twitch.on('message', (channel, tags, message, self) => {
@@ -44,6 +37,18 @@ twitch.on('message', (channel, tags, message, self) => {
 	switch (command) {
 		case 'drop':
 			emitter.emit('drop', tags['display-name']);
+			break;
+		case 'queuedrop':
+			if (!isBroadcaster(tags) && !isModerator(tags))
+				return;
+
+			emitter.emit('queuedrop', args ? parseInt(args) : null);
+			break;
+		case 'startdrop':
+			if (!isBroadcaster(tags) && !isModerator(tags))
+				return;
+
+			emitter.emit('startdrop');
 			break;
 	}
 });

@@ -2,6 +2,7 @@ import Avatar from './avatar.js';
 import constants from './constants.js';
 import emitter from './emitter.js';
 import qs from './querystring.js';
+import { twitch } from './twitch.js';
 import WebFontFile from './webfontfile.js';
 
 /** main game scene */
@@ -12,13 +13,17 @@ export default class Game extends Phaser.Scene {
 		this.dropGroup = null;
 		this.droppers = {};
 		this.droppersArray = [];
+		this.droppersQueue = {};
 		this.endTimer = false;
 		this.endWait = (qs.wait || constants.WAIT_FOR_RESET) * 1000;
+		this.queue = false;
 		this.winner = null;
 
 		emitter.on('drop', this.onDrop, this);
 		emitter.on('land', this.onLand, this);
+		emitter.on('queuedrop', this.onQueueDrop, this);
 		emitter.on('score', this.onScore, this);
+		emitter.on('startdrop', this.onStartDrop, this);
 	}
 
 	create() {
@@ -78,10 +83,14 @@ export default class Game extends Phaser.Scene {
 		this.pad.x = Math.random()
 			* (constants.SCREEN_WIDTH - (this.pad.width * constants.PAD_SCALE));
 		this.pad.setVisible(true);
+
+		if (this.queue)
+			this.droppersQueue = {};
 	}
 
 	end() {
 		this.active = false;
+		this.queue = false;
 		this.pad.setVisible(false);
 
 		for (let drop of this.droppersArray) {
@@ -91,13 +100,28 @@ export default class Game extends Phaser.Scene {
 		}
 	}
 
+	resolveQueue() {
+		for (let dropper of Object.keys(this.droppersQueue))
+			emitter.emit('drop', dropper, true);
+	}
+
 	// events
 
-	onDrop(username) {
+	onDrop(username, queue = false) {
 		if (!this.active)
 			this.start();
-		else if (Object.keys(this.droppers).indexOf(username) >= 0)
+		else if (this.queue && !queue
+			&& this.droppersQueue.hasOwnProperty(username))
+		{
 			return;
+		}
+		else if (!this.queue && this.droppers.hasOwnProperty(username))
+			return;
+
+		if (this.queue && !queue) {
+			this.droppersQueue[username] = true;
+			return;
+		}
 
 		const avatar = new Avatar(username, this);
 		this.droppers[username] = avatar;
@@ -109,6 +133,24 @@ export default class Game extends Phaser.Scene {
 
 	onLand(avatar) {
 		this.dropGroup.remove(avatar.sprite);
+	}
+
+	onQueueDrop(delay = null) {
+		if (this.queue) {
+			twitch.say(qs.channel, 'A queue is already forming!');
+			return;
+		}
+
+		this.queue = true;
+
+		if (delay !== null)
+			setTimeout(this.resolveQueue.bind(this), delay * 1000);
+
+		twitch.say(qs.channel, 'Queue started!');
+	}
+
+	onStartDrop() {
+		this.resolveQueue();
 	}
 
 	onScore(avatar) {
