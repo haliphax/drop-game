@@ -20,10 +20,9 @@ export default class Game extends Phaser.Scene {
 		this.winner = null;
 
 		emitter.on('drop', this.onDrop, this);
-		emitter.on('land', this.onLand, this);
+		emitter.on('lose', this.onLose, this);
 		emitter.on('queuedrop', this.onQueueDrop, this);
 		emitter.on('resetdrop', this.onResetDrop, this);
-		emitter.on('score', this.onScore, this);
 		emitter.on('startdrop', this.onStartDrop, this);
 	}
 
@@ -58,11 +57,7 @@ export default class Game extends Phaser.Scene {
 		this.pad.body.immovable = true;
 		this.pad.body.allowGravity = false;
 		this.pad.body.setSize(this.pad.width, this.pad.height, true);
-		this.physics.add.collider(this.pad, this.dropGroup,
-			(pad, drop) => {
-				if (drop.body.touching.down && pad.body.touching.up)
-					drop.avatar.winner();
-			});
+		this.physics.add.collider(this.pad, this.dropGroup, this.landOnPad.bind(this));
 	}
 
 	preload() {
@@ -107,6 +102,43 @@ export default class Game extends Phaser.Scene {
 			emitter.emit('drop', dropper, true);
 	}
 
+	landOnPad (pad, drop) {
+		if (!drop.body.touching.down || !pad.body.touching.up)
+			return;
+
+		const halfPad = Math.ceil(pad.body.width / 2);
+		const halfDrop = Math.ceil(drop.body.width / 2);
+		const total = halfPad + halfDrop;
+		const pos = Math.abs(
+			drop.getCenter().x - pad.getCenter().x);
+		const orig = drop;
+		const avatar = drop.avatar;
+
+		avatar.active = false;
+		avatar.score = ((total - pos) / total * 100).toFixed(2);
+		avatar.sprite = this.add.image(orig.x, orig.y, 'drop')
+			.setOrigin(0.5, 0.5);
+		orig.destroy();
+
+		if (this.winner && avatar.score <= this.winner.score)
+			return emitter.emit('lose', avatar);
+
+		if (this.winner)
+			emitter.emit('lose', this.winner);
+
+		this.winner = avatar;
+		avatar.scoreLabel = this.add.text(0, 0, avatar.score,
+			{
+				fontFamily: '"Syne Mono"',
+				fontSize: 26,
+				stroke: '#000',
+				strokeThickness: 4,
+			});
+		avatar.scoreLabel.setPosition(
+			avatar.sprite.getCenter().x - (avatar.scoreLabel.width / 2),
+			avatar.sprite.y + avatar.sprite.height - avatar.scoreLabel.height);
+	}
+
 	// events
 
 	onDrop(username, queue = false) {
@@ -133,8 +165,18 @@ export default class Game extends Phaser.Scene {
 		this.endTimer = setTimeout(this.end.bind(this), this.endWait);
 	}
 
-	onLand(avatar) {
+	onLose(avatar) {
+		const orig = avatar.sprite;
+
+		avatar.label.destroy();
+		avatar.label = null;
+		avatar.sprite = this.add.image(avatar.sprite.x, avatar.sprite.y, 'drop')
+			.setOrigin(0.5, 0.5)
+			.setAlpha(0.25);
+		avatar.scoreLabel?.destroy();
+		avatar.scoreLabel = null;
 		this.dropGroup.remove(avatar.sprite);
+		orig.destroy();
 	}
 
 	onQueueDrop(delay = null) {
@@ -157,15 +199,5 @@ export default class Game extends Phaser.Scene {
 
 	onStartDrop() {
 		this.resolveQueue();
-	}
-
-	onScore(avatar) {
-		if (this.winner && avatar.score <= this.winner.score)
-			return avatar.loser();
-
-		if (this.winner)
-			this.winner.loser();
-
-		this.winner = avatar;
 	}
 }
