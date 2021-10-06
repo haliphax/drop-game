@@ -51,6 +51,7 @@ export default class Game extends Phaser.Scene {
 			bounceX: 1,
 			bounceY: 1,
 			collideWorldBounds: true,
+			pushable: true,
 		});
 		this.physics.add.collider(this.dropGroup);
 
