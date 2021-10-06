@@ -1,6 +1,4 @@
 export default {
-	/** delay until chute opens (in milliseconds) */
-	DELAY_CHUTE: 1500,
 	/** default force of gravity */
 	GRAVITY: 150,
 	/** default force of gravity with chute */
