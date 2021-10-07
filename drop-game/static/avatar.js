@@ -37,6 +37,7 @@ export default class Avatar {
 		const direction = Math.random() < 0.5 ? -1 : 1;
 		const velocity = Math.random() * constants.MAX_RANDOM_VELOCITY * direction;
 
+		this.sprite.body.pushable = true;
 		this.sprite.body.velocity.x = velocity;
 		this.sprite.body.setSize(this.sprite.width, this.sprite.height, true);
 		this.sprite.x = Math.random()
