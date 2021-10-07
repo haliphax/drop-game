@@ -138,7 +138,7 @@ export default class Game extends Phaser.Scene {
 			});
 		avatar.scoreLabel.setPosition(
 			avatar.sprite.getCenter().x - (avatar.scoreLabel.width / 2),
-			avatar.sprite.y + avatar.sprite.height - avatar.scoreLabel.height);
+			avatar.sprite.getBottomRight().y - avatar.scoreLabel.height);
 	}
 
 	// events
