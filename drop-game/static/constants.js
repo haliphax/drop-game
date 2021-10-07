@@ -4,7 +4,7 @@ export default {
 	/** default force of gravity with chute */
 	GRAVITY_CHUTE: 50,
 	/** maximum random velocity */
-	MAX_RANDOM_VELOCITY: 1000,
+	MAX_RANDOM_VELOCITY: 600,
 	/** maximum angle of sway */
 	MAX_SWAY: 25,
 	/** scale of pad image */
