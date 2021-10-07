@@ -92,6 +92,7 @@ export default class Game extends Phaser.Scene {
 		this.pad.setVisible(false);
 
 		for (let drop of this.droppersArray) {
+			drop.chute.destroy();
 			drop.sprite.destroy();
 			drop.scoreLabel?.destroy();
 			drop.label?.destroy();
