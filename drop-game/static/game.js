@@ -26,6 +26,14 @@ export default class Game extends Phaser.Scene {
 		emitter.on('startdrop', this.onStartDrop, this);
 	}
 
+	preload() {
+		this.load.addFile(new WebFontFile(this.load, 'Syne Mono'));
+		this.load.setBaseURL('/assets');
+		this.load.image('chute', 'chute.png');
+		this.load.image('drop', 'drop.png');
+		this.load.image('pad', 'pad.png');
+	}
+
 	create() {
 		this.physics.world
 			.setBounds(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
@@ -58,13 +66,6 @@ export default class Game extends Phaser.Scene {
 		this.pad.body.allowGravity = false;
 		this.pad.body.setSize(this.pad.width, this.pad.height, true);
 		this.physics.add.collider(this.pad, this.dropGroup, this.landOnPad.bind(this));
-	}
-
-	preload() {
-		this.load.addFile(new WebFontFile(this.load, 'Syne Mono'));
-		this.load.setBaseURL('/assets');
-		this.load.image('drop', 'drop.png');
-		this.load.image('pad', 'pad.png');
 	}
 
 	update(time, delta) {
