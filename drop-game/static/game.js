@@ -111,8 +111,7 @@ export default class Game extends Phaser.Scene {
 		const halfPad = Math.ceil(pad.body.width / 2);
 		const halfDrop = Math.ceil(drop.body.width / 2);
 		const total = halfPad + halfDrop;
-		const pos = Math.abs(
-			drop.getCenter().x - pad.getCenter().x);
+		const pos = Math.abs(drop.x - pad.getCenter().x);
 		const orig = drop;
 		const avatar = drop.avatar;
 
