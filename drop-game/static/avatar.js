@@ -5,6 +5,10 @@ import qs from './querystring.js';
 export default class Avatar {
 	constructor(username, game) {
 		this.username = username;
+		this.chute = game.add.image(0, 0, 'chute')
+			.setOrigin(0.5, 1)
+			.setVisible(false);
+		this.chuteGravity = parseInt(qs.gravity_chute || constants.GRAVITY_CHUTE);
 		this.label = game.add.text(0, 0, username,
 			{
 				fontFamily: '"Syne Mono"',
@@ -17,8 +21,6 @@ export default class Avatar {
 			.setVisible(false);
 		this.sprite.avatar = this;
 		this.labelOffset = this.sprite.width / 2 - this.label.width / 2;
-		this.chute = false;
-		this.chuteGravity = parseInt(qs.gravity_chute || constants.GRAVITY_CHUTE);
 		this.scoreLabel = null;
 		this.score = -1;
 		this.swayDirection = -1;
@@ -47,7 +49,7 @@ export default class Avatar {
 		if (this.sprite.getBottomRight().y >= constants.SCREEN_HEIGHT)
 			return emitter.emit('lose', this);
 
-		if (this.chute) {
+		if (this.chute.visible) {
 			this.sprite.body.velocity.y = this.chuteGravity;
 
 			if (this.sprite.angle > constants.MAX_SWAY
@@ -57,9 +59,13 @@ export default class Avatar {
 			}
 
 			this.sprite.angle += (this.swayDirection / 2);
+			this.chute.angle = this.sprite.angle;
+			this.chute.setPosition(
+				this.sprite.body.x + (this.sprite.width / 2),
+				this.sprite.body.y + (this.sprite.height / 2));
 		}
 		else if (this.sprite.body.y >= this.sprite.body.height)
-			this.chute = true;
+			this.chute.visible = true;
 
 		this.label.setPosition(
 			this.sprite.body.x + this.labelOffset,

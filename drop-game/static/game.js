@@ -115,6 +115,7 @@ export default class Game extends Phaser.Scene {
 		const avatar = drop.avatar;
 
 		avatar.active = false;
+		avatar.chute.visible = false;
 		avatar.score = ((total - pos) / total * 100).toFixed(2);
 		avatar.sprite = this.add.image(orig.x, orig.y, 'drop')
 			.setOrigin(0.5, 0.5);
@@ -168,6 +169,8 @@ export default class Game extends Phaser.Scene {
 	onLose(avatar) {
 		const orig = avatar.sprite;
 
+		avatar.chute.visible = false;
+		avatar.active = false;
 		avatar.label.destroy();
 		avatar.label = null;
 		avatar.sprite = this.add.image(avatar.sprite.x, avatar.sprite.y, 'drop')
