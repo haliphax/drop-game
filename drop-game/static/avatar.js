@@ -8,6 +8,7 @@ export default class Avatar {
 		this.chute = game.add.image(0, 0, 'chute')
 			.setOrigin(0.5, 1)
 			.setVisible(false);
+		this.chute.angle = Math.random() * 15 * (Math.random() < 0.5 ? -1 : 1);
 		this.chuteGravity = parseInt(qs.gravity_chute || constants.GRAVITY_CHUTE);
 		this.label = game.add.text(0, 0, username,
 			{
@@ -64,8 +65,10 @@ export default class Avatar {
 				this.sprite.body.x + (this.sprite.width / 2),
 				this.sprite.body.y + (this.sprite.height / 2));
 		}
-		else if (this.sprite.body.y >= this.sprite.body.height)
+		else if (this.sprite.body.y >= this.sprite.body.height) {
+			this.sprite.angle = this.chute.angle;
 			this.chute.visible = true;
+		}
 
 		this.label.setPosition(
 			this.sprite.body.x + this.labelOffset,
