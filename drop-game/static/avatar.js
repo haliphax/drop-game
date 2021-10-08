@@ -17,7 +17,8 @@ export default class Avatar {
 				stroke: '#000',
 				strokeThickness: 4,
 			});
-		this.sprite = game.physics.add.image(0, 0, 'drop')
+		this.spriteNumber = Math.ceil(Math.random() * constants.NUM_SPRITES);
+		this.sprite = game.physics.add.image(0, 0, `drop${this.spriteNumber}`)
 			.setOrigin(0.5, 0.5)
 			.setVisible(false);
 		this.sprite.avatar = this;

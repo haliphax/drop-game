@@ -28,9 +28,13 @@ export default class Game extends Phaser.Scene {
 
 	preload() {
 		this.load.addFile(new WebFontFile(this.load, 'Syne Mono'));
-		this.load.setBaseURL('/assets');
+		this.load.setBaseURL('/assets/default');
 		this.load.image('chute', 'chute.png');
-		this.load.image('drop', 'drop.png');
+		this.load.image('drop1', 'drop1.png');
+		this.load.image('drop2', 'drop2.png');
+		this.load.image('drop3', 'drop3.png');
+		this.load.image('drop4', 'drop4.png');
+		this.load.image('drop5', 'drop5.png');
 		this.load.image('pad', 'pad.png');
 	}
 
@@ -42,10 +46,8 @@ export default class Game extends Phaser.Scene {
 		this.pad
 			.setMaxVelocity(0, 0)
 			.setOrigin(0, 0)
-			.setScale(constants.PAD_SCALE)
 			.setVisible(false)
-			.setPosition(
-				0, constants.SCREEN_HEIGHT - this.pad.height * constants.PAD_SCALE);
+			.setPosition(0, constants.SCREEN_HEIGHT - this.pad.height);
 
 		setTimeout(this.ready.bind(this), 100);
 	}
@@ -77,8 +79,7 @@ export default class Game extends Phaser.Scene {
 		this.droppers = {};
 		this.droppersArray = [];
 		this.winner = null;
-		this.pad.x = Math.random()
-			* (constants.SCREEN_WIDTH - (this.pad.width * constants.PAD_SCALE));
+		this.pad.x = Math.random() * (constants.SCREEN_WIDTH - this.pad.width);
 		this.pad.setVisible(true);
 
 		if (this.queue)
@@ -117,8 +118,9 @@ export default class Game extends Phaser.Scene {
 		avatar.active = false;
 		avatar.chute.visible = false;
 		avatar.score = ((total - pos) / total * 100).toFixed(2);
-		avatar.sprite = this.add.image(orig.x, orig.y, 'drop')
-			.setOrigin(0.5, 0.5);
+		avatar.sprite =
+			this.add.image(orig.x, orig.y, `drop${avatar.spriteNumber}`)
+				.setOrigin(0.5, 0.5);
 		orig.destroy();
 
 		if (this.winner && avatar.score <= this.winner.score)
@@ -173,9 +175,10 @@ export default class Game extends Phaser.Scene {
 		avatar.active = false;
 		avatar.label.destroy();
 		avatar.label = null;
-		avatar.sprite = this.add.image(avatar.sprite.x, avatar.sprite.y, 'drop')
-			.setOrigin(0.5, 0.5)
-			.setAlpha(0.25);
+		avatar.sprite = this.add.image(
+				avatar.sprite.x, avatar.sprite.y, `drop${avatar.spriteNumber}`)
+				.setOrigin(0.5, 0.5)
+				.setAlpha(0.25);
 		avatar.scoreLabel?.destroy();
 		avatar.scoreLabel = null;
 		this.dropGroup.remove(avatar.sprite);

@@ -7,8 +7,8 @@ export default {
 	MAX_RANDOM_VELOCITY: 600,
 	/** maximum angle of sway */
 	MAX_SWAY: 25,
-	/** scale of pad image */
-	PAD_SCALE: 2,
+	/** number of sprites */
+	NUM_SPRITES: 5,
 	/** height of screen */
 	SCREEN_HEIGHT: 1080,
 	/** width of screen */
