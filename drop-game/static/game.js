@@ -225,10 +225,10 @@ export default class Game extends Phaser.Scene {
 		const low = JSON.parse(localStorage.getItem('low') || 'null');
 
 		if (low === null)
-			return twitch.say(qs.channel, 'No data.');
+			return twitch.say(qs.channel, 'VoteNay No data.');
 
 		twitch.say(
-			qs.channel, `Lowest score in the last 24 hours: ${low[0]} ${low[1]}`);
+			qs.channel, `ResidentSleeper Lowest score in the last 24 hours: ${low[0]} ${low[1]}`);
 	}
 
 	onDropRecent() {
@@ -238,7 +238,7 @@ export default class Game extends Phaser.Scene {
 		for (let key of Object.keys(scores))
 			output.push(`${key} ${scores[key][0]}`)
 
-		twitch.say(qs.channel, `Recent scores: ${output.join(', ')}`);
+		twitch.say(qs.channel, `CurseLit Recent scores: ${output.join(', ')}`);
 	}
 
 	onDropTop() {
@@ -248,7 +248,7 @@ export default class Game extends Phaser.Scene {
 			return twitch.say(qs.channel, 'No data.');
 
 		twitch.say(
-			qs.channel, `Highest score in the last 24 hours: ${top[0]} ${top[1]}`);
+			qs.channel, `Poooound Highest score in the last 24 hours: ${top[0]} ${top[1]}`);
 	}
 
 	onLose(avatar) {
@@ -270,7 +270,7 @@ export default class Game extends Phaser.Scene {
 
 	onQueueDrop(delay = null) {
 		if (this.queue) {
-			twitch.say(qs.channel, 'A queue is already forming!');
+			twitch.say(qs.channel, 'NotLikeThis A queue is already forming!');
 			return;
 		}
 
@@ -279,7 +279,7 @@ export default class Game extends Phaser.Scene {
 		if (delay !== null)
 			setTimeout(this.resolveQueue.bind(this), delay * 1000);
 
-		twitch.say(qs.channel, 'Queue started!');
+		twitch.say(qs.channel, 'SeemsGood Queue started!');
 	}
 
 	onResetDrop() {
