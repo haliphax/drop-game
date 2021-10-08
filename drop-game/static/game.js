@@ -64,12 +64,14 @@ export default class Game extends Phaser.Scene {
 			bounceY: 1,
 			collideWorldBounds: true,
 		});
-		this.physics.add.collider(this.dropGroup);
+		this.physics.add.collider(
+			this.dropGroup, this.dropGroup, this.crash.bind(this));;
 
 		this.pad.body.immovable = true;
 		this.pad.body.allowGravity = false;
 		this.pad.body.setSize(this.pad.width, this.pad.height, true);
-		this.physics.add.collider(this.pad, this.dropGroup, this.landOnPad.bind(this));
+		this.physics.add.collider(
+			this.pad, this.dropGroup, this.landOnPad.bind(this));
 	}
 
 	update(time, delta) {
@@ -105,6 +107,12 @@ export default class Game extends Phaser.Scene {
 	resolveQueue() {
 		for (let dropper of Object.keys(this.droppersQueue))
 			emitter.emit('drop', dropper, true);
+	}
+
+	crash (a, b) {
+		for (let sprite of [a, b])
+			sprite.body.velocity.y = -1 * (
+				(Math.random() * constants.BUMP_MIN) + constants.BUMP_SPREAD);
 	}
 
 	landOnPad (pad, drop) {

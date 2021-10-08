@@ -53,7 +53,8 @@ export default class Avatar {
 			return emitter.emit('lose', this);
 
 		if (this.chute.visible) {
-			this.sprite.body.velocity.y = this.chuteGravity;
+			if (this.sprite.body.velocity.y > this.chuteGravity)
+				this.sprite.body.velocity.y = this.chuteGravity;
 
 			if (this.sprite.angle > constants.MAX_SWAY
 				|| this.sprite.angle < -constants.MAX_SWAY)

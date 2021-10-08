@@ -1,4 +1,8 @@
 export default {
+	/** minimum vertical velocity "bump" on collision */
+	BUMP_MIN: 20,
+	/** random spread for bump */
+	BUMP_SPREAD: 20,
 	/** default force of gravity */
 	GRAVITY: 150,
 	/** default force of gravity with chute */
