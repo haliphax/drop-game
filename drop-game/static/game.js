@@ -31,7 +31,7 @@ export default class Game extends Phaser.Scene {
 
 	preload() {
 		this.load.addFile(new WebFontFile(this.load, 'Syne Mono'));
-		this.load.setBaseURL('/assets/default');
+		this.load.setBaseURL('./assets/default');
 		this.load.image('chute', 'chute.png');
 		this.load.image('drop1', 'drop1.png');
 		this.load.image('drop2', 'drop2.png');
