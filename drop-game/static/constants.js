@@ -2,9 +2,9 @@ export default {
 	/** default force of gravity */
 	GRAVITY: 150,
 	/** default force of gravity with chute */
-	GRAVITY_CHUTE: 50,
+	GRAVITY_CHUTE: 30,
 	/** maximum random velocity */
-	MAX_RANDOM_VELOCITY: 600,
+	MAX_RANDOM_VELOCITY: 500,
 	/** maximum angle of sway */
 	MAX_SWAY: 25,
 	/** number of sprites */
