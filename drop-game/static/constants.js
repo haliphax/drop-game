@@ -13,6 +13,10 @@ export default {
 	SCREEN_HEIGHT: 1080,
 	/** width of screen */
 	SCREEN_WIDTH: 1920,
+	/** number of recent drops to track */
+	TRACK_RECENT: 10,
+	/** 24 hours in milliseconds */
+	TWENTY_FOUR_HOURS: 24 * 60 * 60 * 1000,
 	/** default wait before reset (in seconds) */
 	WAIT_FOR_RESET: 60,
 }

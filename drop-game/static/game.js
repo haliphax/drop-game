@@ -20,6 +20,9 @@ export default class Game extends Phaser.Scene {
 		this.winner = null;
 
 		emitter.on('drop', this.onDrop, this);
+		emitter.on('droplow', this.onDropLow, this);
+		emitter.on('droprecent', this.onDropRecent, this);
+		emitter.on('droptop', this.onDropTop, this);
 		emitter.on('lose', this.onLose, this);
 		emitter.on('queuedrop', this.onQueueDrop, this);
 		emitter.on('resetdrop', this.onResetDrop, this);
@@ -123,6 +126,48 @@ export default class Game extends Phaser.Scene {
 				.setOrigin(0.5, 0.5);
 		orig.destroy();
 
+		const now = Date.now();
+		const expiry = now - constants.TWENTY_FOUR_HOURS;
+		const allRecent = JSON.parse(localStorage.getItem('recent') || '{}');
+		const recentKeys = Object.keys(allRecent);
+
+		if (recentKeys.length >= constants.TRACK_RECENT
+			&& recentKeys.indexOf(avatar.username) < 0)
+		{
+			let oldest = null;
+
+			for (let key of recentKeys) {
+				const v = allRecent[key];
+
+				if (oldest === null || v[1] < allRecent[oldest][1])
+					oldest = key;
+			}
+
+			delete allRecent[oldest];
+		}
+
+		allRecent[avatar.username] = [avatar.score, now];
+		localStorage.setItem('recent', JSON.stringify(allRecent));
+
+		const record = [avatar.username, avatar.score, now];
+		const topScore = JSON.parse(localStorage.getItem('top') || 'null');
+
+		if (topScore === null
+			|| topScore[2] < expiry
+			|| avatar.score > topScore[1])
+		{
+			localStorage.setItem('top', JSON.stringify(record));
+		}
+
+		const lowScore = JSON.parse(localStorage.getItem('low') || 'null');
+
+		if (lowScore === null
+			|| lowScore[2] < expiry
+			|| avatar.score < lowScore[1])
+		{
+			localStorage.setItem('low', JSON.stringify(record));
+		}
+
 		if (this.winner && avatar.score <= this.winner.score)
 			return emitter.emit('lose', avatar);
 
@@ -166,6 +211,36 @@ export default class Game extends Phaser.Scene {
 		this.dropGroup.add(avatar.sprite);
 		clearTimeout(this.endTimer);
 		this.endTimer = setTimeout(this.end.bind(this), this.endWait);
+	}
+
+	onDropLow() {
+		const low = JSON.parse(localStorage.getItem('low') || 'null');
+
+		if (low === null)
+			return twitch.say(qs.channel, 'No data.');
+
+		twitch.say(
+			qs.channel, `Lowest score in the last 24 hours: ${low[0]} ${low[1]}`);
+	}
+
+	onDropRecent() {
+		const scores = JSON.parse(localStorage.getItem('recent') || '{}');
+		const output = [];
+
+		for (let key of Object.keys(scores))
+			output.push(`${key} ${scores[key][0]}`)
+
+		twitch.say(qs.channel, `Recent scores: ${output.join(', ')}`);
+	}
+
+	onDropTop() {
+		const top = JSON.parse(localStorage.getItem('top') || 'null');
+
+		if (top === null)
+			return twitch.say(qs.channel, 'No data.');
+
+		twitch.say(
+			qs.channel, `Highest score in the last 24 hours: ${top[0]} ${top[1]}`);
 	}
 
 	onLose(avatar) {

@@ -45,6 +45,15 @@ twitch.on('message', (channel, tags, message, self) => {
 		case 'drop':
 			emitter.emit('drop', tags['display-name']);
 			break;
+		case 'droplow':
+			emitter.emit('droplow');
+			break;
+		case 'droptop':
+			emitter.emit('droptop');
+			break;
+		case 'droprecent':
+			emitter.emit('droprecent');
+			break;
 		case 'queuedrop':
 			if (!isBroadcaster(tags) && !isModerator(tags))
 				return;
@@ -61,6 +70,7 @@ twitch.on('message', (channel, tags, message, self) => {
 			if (!isBroadcaster(tags) && !isModerator(tags))
 				return;
 
+			twitch.say(qs.channel, 'Let\'s goooooooooooo! PogChamp')
 			emitter.emit('startdrop');
 			break;
 	}
