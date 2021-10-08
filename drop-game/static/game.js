@@ -233,9 +233,13 @@ export default class Game extends Phaser.Scene {
 
 	onDropRecent() {
 		const scores = JSON.parse(localStorage.getItem('recent') || '{}');
+		const keys = Object.keys(scores);
 		const output = [];
 
-		for (let key of Object.keys(scores))
+		if (keys.length === 0)
+			return twitch.say(qs.channel, 'VoteNay No data.');
+
+		for (let key of keys)
 			output.push(`${key} ${scores[key][0]}`)
 
 		twitch.say(qs.channel, `CurseLit Recent scores: ${output.join(', ')}`);
@@ -245,7 +249,7 @@ export default class Game extends Phaser.Scene {
 		const top = JSON.parse(localStorage.getItem('top') || 'null');
 
 		if (top === null)
-			return twitch.say(qs.channel, 'No data.');
+			return twitch.say(qs.channel, 'VoteNay No data.');
 
 		twitch.say(
 			qs.channel, `Poooound Highest score in the last 24 hours: ${top[0]} ${top[1]}`);
