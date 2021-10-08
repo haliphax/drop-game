@@ -13,9 +13,9 @@ export default class Avatar {
 		this.label = game.add.text(0, 0, username,
 			{
 				fontFamily: '"Syne Mono"',
-				fontSize: 18,
+				fontSize: 20,
 				stroke: '#000',
-				strokeThickness: 4,
+				strokeThickness: 6,
 			});
 		this.spriteNumber = Math.ceil(Math.random() * constants.NUM_SPRITES);
 		this.sprite = game.physics.add.image(0, 0, `drop${this.spriteNumber}`)

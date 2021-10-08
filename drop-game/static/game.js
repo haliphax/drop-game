@@ -188,7 +188,7 @@ export default class Game extends Phaser.Scene {
 				fontFamily: '"Syne Mono"',
 				fontSize: 26,
 				stroke: '#000',
-				strokeThickness: 4,
+				strokeThickness: 6,
 			});
 		avatar.scoreLabel.setPosition(
 			avatar.sprite.getCenter().x - (avatar.scoreLabel.width / 2),
