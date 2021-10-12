@@ -4,6 +4,8 @@ import Game from './game.js';
 import qs from './querystring.js';
 import { isBroadcaster, isModerator, twitch } from './twitch.js';
 
+if (qs.demo) document.body.classList.add('demo');
+
 const game = new Phaser.Game({
 	height: constants.SCREEN_HEIGHT,
 	physics: {
