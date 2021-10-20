@@ -2,6 +2,7 @@ import Avatar from './avatar.js';
 import constants from './constants.js';
 import emitter from './emitter.js';
 import qs from './querystring.js';
+import Score from './score.js';
 import { twitch } from './twitch.js';
 import WebFontFile from './webfontfile.js';
 
@@ -27,6 +28,13 @@ export default class Game extends Phaser.Scene {
 		emitter.on('queuedrop', this.onQueueDrop, this);
 		emitter.on('resetdrop', this.onResetDrop, this);
 		emitter.on('startdrop', this.onStartDrop, this);
+
+		setTimeout(this.tidyScores.bind(this), constants.TIDY_SCHEDULE);
+		this.tidyScores();
+	}
+
+	get scores() {
+		return JSON.parse(localStorage.getItem('scores') || '[]');
 	}
 
 	preload() {
@@ -75,8 +83,22 @@ export default class Game extends Phaser.Scene {
 	}
 
 	update(time, delta) {
-		for (let drop of this.droppersArray)
-			if (drop.active) drop.update();
+		for (let drop of this.droppersArray) {
+			if (!drop.active)
+				continue;
+
+			drop.update();
+		}
+	}
+
+	tidyScores() {
+		console.log('Tidying scores');
+		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
+		const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+		const update = scores.filter(v => v.when > expiry);
+
+		localStorage.setItem('scores', JSON.stringify(update));
+		console.log('Tidy scores complete');
 	}
 
 	start() {
@@ -128,53 +150,16 @@ export default class Game extends Phaser.Scene {
 
 		avatar.active = false;
 		avatar.chute.visible = false;
-		avatar.score = ((total - pos) / total * 100).toFixed(2);
+		avatar.score = (total - pos) / total * 100;
 		avatar.sprite =
 			this.add.image(orig.x, orig.y, `drop${avatar.spriteNumber}`)
 				.setOrigin(0.5, 0.5);
 		orig.destroy();
 
-		const now = Date.now();
-		const expiry = now - constants.TWENTY_FOUR_HOURS;
-		const allRecent = JSON.parse(localStorage.getItem('recent') || '{}');
-		const recentKeys = Object.keys(allRecent);
+		const scores = this.scores;
 
-		if (recentKeys.length >= constants.TRACK_RECENT
-			&& recentKeys.indexOf(avatar.username) < 0)
-		{
-			let oldest = null;
-
-			for (let key of recentKeys) {
-				const v = allRecent[key];
-
-				if (oldest === null || v[1] < allRecent[oldest][1])
-					oldest = key;
-			}
-
-			delete allRecent[oldest];
-		}
-
-		allRecent[avatar.username] = [avatar.score, now];
-		localStorage.setItem('recent', JSON.stringify(allRecent));
-
-		const record = [avatar.username, avatar.score, now];
-		const topScore = JSON.parse(localStorage.getItem('top') || 'null');
-
-		if (topScore === null
-			|| topScore[2] < expiry
-			|| avatar.score > topScore[1])
-		{
-			localStorage.setItem('top', JSON.stringify(record));
-		}
-
-		const lowScore = JSON.parse(localStorage.getItem('low') || 'null');
-
-		if (lowScore === null
-			|| lowScore[2] < expiry
-			|| avatar.score < lowScore[1])
-		{
-			localStorage.setItem('low', JSON.stringify(record));
-		}
+		scores.push(new Score(avatar.username, avatar.score));
+		localStorage.setItem('scores', JSON.stringify(scores));
 
 		if (this.winner && avatar.score <= this.winner.score)
 			return emitter.emit('lose', avatar);
@@ -183,7 +168,7 @@ export default class Game extends Phaser.Scene {
 			emitter.emit('lose', this.winner);
 
 		this.winner = avatar;
-		avatar.scoreLabel = this.add.text(0, 0, avatar.score,
+		avatar.scoreLabel = this.add.text(0, 0, avatar.score.toFixed(2),
 			{
 				fontFamily: '"Syne Mono"',
 				fontSize: 26,
@@ -222,37 +207,86 @@ export default class Game extends Phaser.Scene {
 	}
 
 	onDropLow() {
-		const low = JSON.parse(localStorage.getItem('low') || 'null');
+		const scores = this.scores;
 
-		if (low === null)
+		if (scores.length === 0)
 			return twitch.say(qs.channel, 'VoteNay No data.');
 
+		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
+		let lowest = new Score(null, 101);
+
+		for (let score of scores) {
+			if (score.when < expiry)
+				continue;
+
+			if (score.score < lowest.score)
+				lowest = score;
+		}
+
 		twitch.say(
-			qs.channel, `ResidentSleeper Lowest score in the last 24 hours: ${low[0]} ${low[1]}`);
+			qs.channel,
+			`ResidentSleeper Lowest score in the past 24 hours: ${lowest.username} ${lowest.score.toFixed(2)}`);
 	}
 
 	onDropRecent() {
-		const scores = JSON.parse(localStorage.getItem('recent') || '{}');
-		const keys = Object.keys(scores);
-		const output = [];
+		// TODO:
+		const scores = this.scores;
+		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
+		const recent = {};
+		let tracking = 0;
+		let oldest = new Score(null, 0, 0);
 
-		if (keys.length === 0)
-			return twitch.say(qs.channel, 'VoteNay No data.');
+		for (let score of scores) {
+			if (score.when < expiry)
+				continue;
 
-		for (let key of keys)
-			output.push(`${key} ${scores[key][0]}`)
+			if (recent.hasOwnProperty(score.username)) {
+				if (recent[score.username].when < score.when)
+					recent[score.username] = score;
+			}
+			else if (tracking < constants.RECENT_SCORES
+				|| score.when > oldest.when)
+			{
+				if (tracking >= constants.RECENT_SCORES)
+					delete recent[oldest.username];
+				else
+					tracking++;
 
-		twitch.say(qs.channel, `CurseLit Recent scores: ${output.join(', ')}`);
+				if (score.when > oldest.when)
+					oldest = score;
+
+				recent[score.username] = score;
+			}
+		}
+
+		const out = Object.values(recent)
+			.sort((a, b) => a.when - b.when)
+			.map(v => `${v.username} (${v.score.toFixed(2)})`)
+			.join(', ');
+
+		twitch.say(qs.channel, `OhMyDog Recent drops: ${out}`);
 	}
 
 	onDropTop() {
-		const top = JSON.parse(localStorage.getItem('top') || 'null');
+		const scores = this.scores;
 
-		if (top === null)
+		if (scores.length === 0)
 			return twitch.say(qs.channel, 'VoteNay No data.');
 
+		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
+		let highest = new Score(null, 0);
+
+		for (let score of scores) {
+			if (score.when < expiry)
+				continue;
+
+			if (score.score > highest.score)
+				highest = score;
+		}
+
 		twitch.say(
-			qs.channel, `Poooound Highest score in the last 24 hours: ${top[0]} ${top[1]}`);
+			qs.channel,
+			`Poooound Highest score in the past 24 hours: ${highest.username} ${highest.score.toFixed(2)}`);
 	}
 
 	onLose(avatar) {
@@ -291,6 +325,9 @@ export default class Game extends Phaser.Scene {
 	}
 
 	onStartDrop() {
+		if (!this.queue)
+			return;
+
 		this.resolveQueue();
 	}
 }

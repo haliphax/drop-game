@@ -4,19 +4,23 @@ export default {
 	/** random spread for bump */
 	BUMP_SPREAD: 20,
 	/** default force of gravity */
-	GRAVITY: 150,
+	GRAVITY: 400,
 	/** default force of gravity with chute */
 	GRAVITY_CHUTE: 30,
 	/** maximum random velocity */
-	MAX_RANDOM_VELOCITY: 300,
+	MAX_RANDOM_VELOCITY: 600,
 	/** maximum angle of sway */
 	MAX_SWAY: 25,
 	/** number of sprites */
 	NUM_SPRITES: 5,
+	/** number of recent scores to list with !droprecent */
+	RECENT_SCORES: 10,
 	/** height of screen */
 	SCREEN_HEIGHT: 1080,
 	/** width of screen */
 	SCREEN_WIDTH: 1920,
+	/** number of seconds between score tidying */
+	TIDY_SCHEDULE: 5 * 60 * 1000,
 	/** number of recent drops to track */
 	TRACK_RECENT: 10,
 	/** 24 hours in milliseconds */
