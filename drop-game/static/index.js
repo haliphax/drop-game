@@ -72,7 +72,6 @@ twitch.on('message', (channel, tags, message, self) => {
 			if (!isBroadcaster(tags) && !isModerator(tags))
 				return;
 
-			twitch.say(qs.channel, 'Let\'s goooooooooooo! PogChamp')
 			emitter.emit('startdrop');
 			break;
 	}

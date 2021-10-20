@@ -94,9 +94,8 @@ export default class Game extends Phaser.Scene {
 	tidyScores() {
 		console.log('Tidying scores');
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
-		const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+		const scores = this.scores;
 		const update = scores.filter(v => v.when > expiry);
-
 		localStorage.setItem('scores', JSON.stringify(update));
 		console.log('Tidy scores complete');
 	}
@@ -127,6 +126,8 @@ export default class Game extends Phaser.Scene {
 	}
 
 	resolveQueue() {
+		twitch.say(qs.channel, 'Let\'s goooooooooooo! PogChamp')
+
 		for (let dropper of Object.keys(this.droppersQueue))
 			emitter.emit('drop', dropper, true);
 	}
@@ -229,7 +230,6 @@ export default class Game extends Phaser.Scene {
 	}
 
 	onDropRecent() {
-		// TODO:
 		const scores = this.scores;
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		const recent = {};
