@@ -36,6 +36,8 @@ twitch.on('message', (channel, tags, message, self) => {
 	const command = cmd[1].toLowerCase().substring(1);
 	const args = cmd[2];
 
+	// TODO: command timeouts
+
 	switch (command) {
 		case 'clearscores':
 			if (!isBroadcaster(tags) && !isModerator(tags))
