@@ -296,10 +296,11 @@ export default class Game extends Phaser.Scene {
 		avatar.active = false;
 		avatar.label.destroy();
 		avatar.label = null;
-		avatar.sprite = this.add.image(
+		avatar.sprite =
+			this.add.image(
 				avatar.sprite.x, avatar.sprite.y, `drop${avatar.spriteNumber}`)
-				.setOrigin(0.5, 0.5)
-				.setAlpha(0.25);
+			.setOrigin(0.5, 0.5)
+			.setAlpha(0.25);
 		avatar.scoreLabel?.destroy();
 		avatar.scoreLabel = null;
 		this.dropGroup.remove(avatar.sprite);
