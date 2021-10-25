@@ -56,9 +56,9 @@ export default class Game extends Phaser.Scene {
 		this.pad = this.physics.add.image(0, 0, 'pad');
 		this.pad
 			.setMaxVelocity(0, 0)
-			.setOrigin(0, 0)
+			.setOrigin(0.5, 1)
 			.setVisible(false)
-			.setPosition(0, constants.SCREEN_HEIGHT - this.pad.height);
+			.setPosition(0, constants.SCREEN_HEIGHT);
 
 		setTimeout(this.ready.bind(this), 100);
 	}
@@ -105,7 +105,8 @@ export default class Game extends Phaser.Scene {
 		this.droppers = {};
 		this.droppersArray = [];
 		this.winner = null;
-		this.pad.x = Math.random() * (constants.SCREEN_WIDTH - this.pad.width);
+		this.pad.x = (this.pad.width / 2)
+			+ (Math.random() * (constants.SCREEN_WIDTH - this.pad.width));
 		this.pad.setVisible(true);
 
 		if (this.queue)
@@ -117,12 +118,13 @@ export default class Game extends Phaser.Scene {
 		this.queue = false;
 		this.pad.setVisible(false);
 
-		for (let drop of this.droppersArray) {
-			drop.chute.destroy();
-			drop.sprite.destroy();
-			drop.scoreLabel?.destroy();
-			drop.label?.destroy();
-		}
+		for (let drop of this.droppersArray)
+			drop.container.destroy();
+	}
+
+	resetTimer() {
+		clearTimeout(this.endTimer);
+		this.endTimer = setTimeout(this.end.bind(this), this.endWait);
 	}
 
 	resolveQueue() {
@@ -133,8 +135,8 @@ export default class Game extends Phaser.Scene {
 	}
 
 	crash (a, b) {
-		for (let sprite of [a, b])
-			sprite.body.velocity.y = -1 * (
+		for (let container of [a, b])
+			container.body.velocity.y = -1 * (
 				(Math.random() * constants.BUMP_MIN) + constants.BUMP_SPREAD);
 	}
 
@@ -142,43 +144,41 @@ export default class Game extends Phaser.Scene {
 		if (!drop.body.touching.down || !pad.body.touching.up)
 			return;
 
+		this.resetTimer();
 		const halfPad = Math.ceil(pad.body.width / 2);
-		const halfDrop = Math.ceil(drop.body.width / 2);
+		const halfDrop = Math.ceil(drop.avatar.sprite.width / 2);
 		const total = halfPad + halfDrop;
-		const pos = Math.abs(drop.x - pad.getCenter().x);
-		const orig = drop;
+		const pos = Math.abs(drop.x - pad.x);
 		const avatar = drop.avatar;
 
+		drop.body.enable = false;
+		this.dropGroup.remove(drop);
 		avatar.active = false;
 		avatar.chute.visible = false;
 		avatar.score = (total - pos) / total * 100;
-		avatar.sprite =
-			this.add.image(orig.x, orig.y, `drop${avatar.spriteNumber}`)
-				.setOrigin(0.5, 0.5);
-		orig.destroy();
+		avatar.sprite.angle = 0;
 
 		const scores = this.scores;
 
 		scores.push(new Score(avatar.username, avatar.score));
 		localStorage.setItem('scores', JSON.stringify(scores));
 
-		if (this.winner && avatar.score <= this.winner.score)
+		if (this.winner && avatar.score < this.winner.score)
 			return emitter.emit('lose', avatar);
 
-		if (this.winner)
+		if (this.winner) {
 			emitter.emit('lose', this.winner);
+			this.winner.container.setDepth(0);
+		}
 
+		avatar.container.setDepth(1);
 		this.winner = avatar;
-		avatar.scoreLabel = this.add.text(0, 0, avatar.score.toFixed(2),
-			{
-				fontFamily: '"Syne Mono"',
-				fontSize: 26,
-				stroke: '#000',
-				strokeThickness: 6,
-			});
-		avatar.scoreLabel.setPosition(
-			avatar.sprite.getCenter().x - (avatar.scoreLabel.width / 2),
-			avatar.sprite.getBottomRight().y - avatar.scoreLabel.height);
+		avatar.scoreLabel.text = avatar.score.toFixed(2);
+		avatar.scoreLabel
+			.setPosition(
+				avatar.sprite.x,
+				avatar.sprite.y + (avatar.sprite.height / 2))
+			.setVisible(true);
 	}
 
 	// events
@@ -199,12 +199,11 @@ export default class Game extends Phaser.Scene {
 			return;
 		}
 
+		clearTimeout(this.endTimer);
 		const avatar = new Avatar(username, this);
 		this.droppers[username] = avatar;
 		this.droppersArray.push(avatar);
-		this.dropGroup.add(avatar.sprite);
-		clearTimeout(this.endTimer);
-		this.endTimer = setTimeout(this.end.bind(this), this.endWait);
+		this.dropGroup.add(avatar.container);
 	}
 
 	onDropLow() {
@@ -290,21 +289,17 @@ export default class Game extends Phaser.Scene {
 	}
 
 	onLose(avatar) {
-		const orig = avatar.sprite;
-
+		this.resetTimer();
+		avatar.container.body.enable = false;
 		avatar.chute.visible = false;
 		avatar.active = false;
 		avatar.label.destroy();
 		avatar.label = null;
-		avatar.sprite =
-			this.add.image(
-				avatar.sprite.x, avatar.sprite.y, `drop${avatar.spriteNumber}`)
-			.setOrigin(0.5, 0.5)
-			.setAlpha(0.25);
+		avatar.sprite.angle = 0;
+		avatar.sprite.setAlpha(0.25);
 		avatar.scoreLabel?.destroy();
 		avatar.scoreLabel = null;
-		this.dropGroup.remove(avatar.sprite);
-		orig.destroy();
+		this.dropGroup.remove(avatar.container);
 	}
 
 	onQueueDrop(delay = null) {
