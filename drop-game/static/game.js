@@ -108,14 +108,12 @@ export default class Game extends Phaser.Scene {
 		this.pad.x = (this.pad.width / 2)
 			+ (Math.random() * (constants.SCREEN_WIDTH - this.pad.width));
 		this.pad.setVisible(true);
-
-		if (this.queue)
-			this.droppersQueue = {};
 	}
 
 	end() {
 		this.active = false;
 		this.queue = false;
+		this.droppersQueue = {};
 		this.pad.setVisible(false);
 
 		for (let drop of this.droppersArray)
@@ -128,6 +126,7 @@ export default class Game extends Phaser.Scene {
 	}
 
 	resolveQueue() {
+		this.start();
 		twitch.say(qs.channel, 'Let\'s goooooooooooo! PogChamp')
 
 		for (let dropper of Object.keys(this.droppersQueue))
@@ -184,9 +183,12 @@ export default class Game extends Phaser.Scene {
 	// events
 
 	onDrop(username, queue = false) {
-		if (!this.active)
+		if (!this.active && !this.queue)
 			this.start();
-		else if (this.queue && !queue
+		else if (this.active && this.queue && !queue)
+			return;
+
+		if (this.queue && !queue
 			&& this.droppersQueue.hasOwnProperty(username))
 		{
 			return;
