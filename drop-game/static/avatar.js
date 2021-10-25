@@ -82,17 +82,14 @@ export default class Avatar {
 			}
 
 			this.chute.angle += (this.swayDirection / 2);
-			this.sprite.angle = this.chute.angle;
 			this.chute.setPosition(this.sprite.x, this.sprite.y);
 		}
 		else if (this.container.body.y >= this.sprite.height) {
-			this.sprite.angle = this.chute.angle;
 			this.chute.visible = true;
 		}
 
+		this.sprite.angle = this.chute.angle;
 		this.container.angle = 0;
-		this.label.setPosition(
-			this.sprite.x,
-			-(this.sprite.height / 2));
+		this.label.setPosition(this.sprite.x, -(this.sprite.height / 2));
 	}
 }
