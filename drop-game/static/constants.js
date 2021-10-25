@@ -7,10 +7,10 @@ export default {
 	GRAVITY: 400,
 	/** default force of gravity with chute */
 	GRAVITY_CHUTE: 30,
-	/** maximum random velocity */
-	MAX_RANDOM_VELOCITY: 600,
 	/** maximum angle of sway */
 	MAX_SWAY: 25,
+	/** maximum random velocity */
+	MAX_VELOCITY: 600,
 	/** number of sprites */
 	NUM_SPRITES: 5,
 	/** number of recent scores to list with !droprecent */
