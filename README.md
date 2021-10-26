@@ -55,7 +55,7 @@ Optional parameters:
 |-----|---------|-------------|
 | `demo` | undefined | If this key is present, the background of the game will be set to dark gray (for testing) |
 | `gravity` | 400 | The gravity to apply to sprites before their parachute is open |
-| `gravity_chute` | 60 | The gravy to apply to sprites once their parachute is open |
+| `gravity_chute` | 60 | The gravity to apply to sprites once their parachute is open |
 | `max_velocity` | 600 | The maximum velocity of sprites (horizontal motion) |
 | `wait` | 60 | The number of seconds to wait (after the last drop has landed) before resetting the game |
 
