@@ -25,7 +25,8 @@ export default class Avatar {
 					strokeThickness: constants.STROKE_THICKNESS,
 				})
 			.setOrigin(0.5, 0);
-		this.scoreLabel = game.add.text(0, this.sprite.height, '0',
+		this.scoreLabel = game.add.text(
+			0, this.sprite.height - constants.SCORE_SIZE, '0',
 			{
 				fontFamily: `"${constants.FONT_FAMILY}"`,
 				fontSize: constants.SCORE_SIZE,
