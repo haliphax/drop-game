@@ -1,0 +1,7 @@
+{
+  "project": {
+    "name": "phaxDrop",
+    "description": "A viewer game for Twitch streams",
+    "version": "1.0.1"
+  }
+}
