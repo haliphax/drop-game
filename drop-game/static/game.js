@@ -16,7 +16,7 @@ export default class Game extends Phaser.Scene {
 		this.droppersArray = [];
 		this.droppersQueue = {};
 		this.endTimer = false;
-		this.endWait = (qs.wait || constants.WAIT_FOR_RESET) * 1000;
+		this.endWait = parseInt(qs.wait || constants.WAIT_FOR_RESET) * 1000;
 		this.queue = false;
 		this.winner = null;
 
@@ -38,7 +38,7 @@ export default class Game extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.addFile(new WebFontFile(this.load, 'Syne Mono'));
+		this.load.addFile(new WebFontFile(this.load, constants.FONT_FAMILY));
 		this.load.setBaseURL('./assets/default');
 		this.load.image('chute', 'chute.png');
 		this.load.image('drop1', 'drop1.png');
@@ -144,8 +144,8 @@ export default class Game extends Phaser.Scene {
 			return;
 
 		this.resetTimer();
-		const halfPad = Math.ceil(pad.body.width / 2);
-		const halfDrop = Math.ceil(drop.avatar.sprite.width / 2);
+		const halfPad = Math.ceil(pad.width / 2);
+		const halfDrop = Math.ceil(drop.width / 2);
 		const total = halfPad + halfDrop;
 		const pos = Math.abs(drop.x - pad.x);
 		const avatar = drop.avatar;
@@ -154,7 +154,7 @@ export default class Game extends Phaser.Scene {
 		this.dropGroup.remove(drop);
 		avatar.active = false;
 		avatar.chute.visible = false;
-		avatar.score = (total - pos) / total * 100;
+		avatar.score = ((total - pos) / total) * 100;
 		avatar.sprite.angle = 0;
 
 		const scores = this.scores;
@@ -173,11 +173,7 @@ export default class Game extends Phaser.Scene {
 		avatar.container.setDepth(1);
 		this.winner = avatar;
 		avatar.scoreLabel.text = avatar.score.toFixed(2);
-		avatar.scoreLabel
-			.setPosition(
-				avatar.sprite.x,
-				avatar.sprite.y + (avatar.sprite.height / 2))
-			.setVisible(true);
+		avatar.scoreLabel.setVisible(true);
 	}
 
 	// events

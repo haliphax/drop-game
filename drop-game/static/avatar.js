@@ -8,30 +8,32 @@ export default class Avatar {
 		this.chute = game.add.image(0, 0, 'chute')
 			.setOrigin(0.5, 1)
 			.setVisible(false);
-		this.chute.angle = Math.random() * 15 * (Math.random() < 0.5 ? -1 : 1);
+		this.chute.angle = Math.random() * constants.MAX_SWAY
+			* (Math.random() < 0.5 ? -1 : 1);
 		this.chuteGravity = parseInt(qs.gravity_chute || constants.GRAVITY_CHUTE);
 		this.spriteNumber = Math.ceil(Math.random() * constants.NUM_SPRITES);
 		this.sprite = game.add.image(0, 0, `drop${this.spriteNumber}`)
 			.setOrigin(0.5, 0.5)
 			.setVisible(false);
-		this.label = game.add.text(0, 0, username,
+		this.label =
+			game.add.text(
+				0, -(this.sprite.height / 2) - constants.LABEL_SIZE, username,
+				{
+					fontFamily: `"${constants.FONT_FAMILY}"`,
+					fontSize: constants.LABEL_SIZE,
+					stroke: constants.STROKE_COLOR,
+					strokeThickness: constants.STROKE_THICKNESS,
+				})
+			.setOrigin(0.5, 0);
+		this.scoreLabel = game.add.text(0, this.sprite.height, '0',
 			{
-				fontFamily: '"Syne Mono"',
-				fontSize: 20,
-				stroke: '#000',
-				strokeThickness: 6,
-			})
-			.setOrigin(0.5, 0.5);
-		this.scoreLabel = game.add.text(0, 0, '0',
-			{
-				fontFamily: '"Syne Mono"',
-				fontSize: 26,
-				stroke: '#000',
-				strokeThickness: 6,
+				fontFamily: `"${constants.FONT_FAMILY}"`,
+				fontSize: constants.SCORE_SIZE,
+				stroke: constants.STROKE_COLOR,
+				strokeThickness: constants.STROKE_THICKNESS,
 			})
 			.setOrigin(0.5, 1)
 			.setVisible(false);
-		this.labelOffset = this.sprite.width / 2 - this.label.width / 2;
 		this.score = -1;
 		this.swayDirection = -1;
 		this.active = true;
@@ -94,6 +96,5 @@ export default class Avatar {
 
 		this.sprite.angle = this.chute.angle;
 		this.container.angle = 0;
-		this.label.setPosition(this.sprite.x, -(this.sprite.height / 2));
 	}
 }
