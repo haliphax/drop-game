@@ -1,5 +1,25 @@
 # Changelog
 
+<a name="1.0.2"></a>
+## 1.0.2 (2021-10-28)
+
+### Added
+
+- ✨ debugging features [[49eb408](https://github.com/haliphax/drop-game/commit/49eb40874e598902eb42aa4af39ae392009ba20a)]
+
+### Changed
+
+- ♻️ more constants and some tidying [[853b216](https://github.com/haliphax/drop-game/commit/853b216e1437d94d32b0bbf18bc32fc1b7717130)]
+
+### Fixed
+
+- 🐛 FINALLY fix negative score bug FOR REAL [[4686a77](https://github.com/haliphax/drop-game/commit/4686a7710dfd47d799ad9af4eacaf9a4904710d7)]
+
+### Miscellaneous
+
+- 🩹 fix score label position [[352f57d](https://github.com/haliphax/drop-game/commit/352f57d23c320d1f0e2098adf05930b9e02427fd)]
+
+
 <a name="1.0.1"></a>
 ## 1.0.1 (2021-10-26)
 
