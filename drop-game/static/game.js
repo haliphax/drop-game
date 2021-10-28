@@ -164,6 +164,12 @@ export default class Game extends Phaser.Scene {
 		const score = ((total - pos) / total) * 100;
 		const avatar = drop.avatar;
 
+		if (score < 0) {
+			drop.body.x += -drop.body.velocity.x;
+			drop.body.velocity.x *= -1;
+			return;
+		}
+
 		this.resetTimer();
 		avatar.score = score;
 		drop.body.enable = false;
