@@ -80,6 +80,14 @@ export default class Game extends Phaser.Scene {
 		this.pad.body.setSize(this.pad.width, this.pad.height, true);
 		this.physics.add.collider(
 			this.pad, this.dropGroup, this.landOnPad.bind(this));
+
+		if (qs.debug)
+			this.rect =
+				this.add.rectangle(
+					0, this.pad.body.y, this.pad.body.width, this.pad.body.height)
+				.setOrigin(0.5, 0)
+				.setDepth(1)
+				.setStrokeStyle(2, 0xff0ff);
 	}
 
 	update(time, delta) {
@@ -92,12 +100,12 @@ export default class Game extends Phaser.Scene {
 	}
 
 	tidyScores() {
-		console.log('Tidying scores');
+		console.debug('Tidying scores');
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		const scores = this.scores;
 		const update = scores.filter(v => v.when > expiry);
 		localStorage.setItem('scores', JSON.stringify(update));
-		console.log('Tidy scores complete');
+		console.debug('Tidy scores complete');
 	}
 
 	start() {
@@ -105,9 +113,15 @@ export default class Game extends Phaser.Scene {
 		this.droppers = {};
 		this.droppersArray = [];
 		this.winner = null;
-		this.pad.x = (this.pad.width / 2)
-			+ (Math.random() * (constants.SCREEN_WIDTH - this.pad.width));
+		this.pad.x = Math.floor(
+			(this.pad.width / 2)
+				+ (Math.random() * (constants.SCREEN_WIDTH - this.pad.width)));
+
+		if (qs.debug)
+			this.rect.x = this.pad.x;
+
 		this.pad.setVisible(true);
+		console.debug(`Pad X Position: ${this.pad.x}`);
 	}
 
 	end() {
@@ -143,18 +157,19 @@ export default class Game extends Phaser.Scene {
 		if (!drop.body.touching.down || !pad.body.touching.up)
 			return;
 
-		this.resetTimer();
 		const halfPad = Math.ceil(pad.width / 2);
 		const halfDrop = Math.ceil(drop.width / 2);
 		const total = halfPad + halfDrop;
 		const pos = Math.abs(drop.x - pad.x);
+		const score = ((total - pos) / total) * 100;
 		const avatar = drop.avatar;
 
+		this.resetTimer();
+		avatar.score = score;
 		drop.body.enable = false;
 		this.dropGroup.remove(drop);
 		avatar.active = false;
 		avatar.chute.visible = false;
-		avatar.score = ((total - pos) / total) * 100;
 		avatar.sprite.angle = 0;
 
 		const scores = this.scores;

@@ -42,7 +42,14 @@ export default class Avatar {
 		this.container.avatar = this;
 		game.physics.world.enableBody(this.container);
 
-		setTimeout(this.ready.bind(this, game), 100);
+		if (qs.debug)
+			this.rect =
+				game.add.rectangle(0, 0, 0, 0)
+					.setStrokeStyle(2, 0xff00ff)
+					.setOrigin(0.5, 0.5)
+					.setDepth(1);
+
+		setTimeout(this.ready.bind(this), 100);
 	}
 
 	ready() {
@@ -60,17 +67,30 @@ export default class Avatar {
 		this.container.body.velocity.x = velocity;
 		this.container.body.setSize(this.sprite.width, this.sprite.height, true);
 		this.container.setSize(this.sprite.width, this.sprite.height, true);
-		this.container.x = this.sprite.width / 2 + Math.random()
-			* (constants.SCREEN_WIDTH - this.sprite.width / 2);
+
+		if (qs.debug)
+			this.rect.setSize(this.container.body.width, this.container.body.height);
+
+		this.container.x = Math.floor(
+			(this.sprite.width / 2) + Math.random()
+				* (constants.SCREEN_WIDTH - this.sprite.width / 2));
 		this.container.add(this.chute);
 		this.container.add(this.sprite);
 		this.container.add(this.label);
 		this.container.add(this.scoreLabel);
 		this.sprite.visible = true;
+		console.debug(`Dropper: ${this.username}`);
+		console.debug(`X Velocity: ${this.container.body.velocity.x}`);
+		console.debug(`X Position: ${this.container.x}`);
 	}
 
 	update() {
 		if (!this.container.body) return;
+
+		if (qs.debug) {
+			this.rect.setPosition(this.container.body.x, this.container.body.y);
+			this.rect.angle = this.container.body.angle;
+		}
 
 		if (this.container.y + Math.ceil(this.container.height / 2)
 			>= constants.SCREEN_HEIGHT)
