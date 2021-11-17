@@ -1,4 +1,4 @@
-import qs from './querystring.js';
+import { qs } from './querystring.js';
 
 const twitch = new tmi.Client({
 	options: { debug: true },

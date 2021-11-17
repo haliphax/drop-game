@@ -1,6 +1,6 @@
 import constants from './constants.js';
 import emitter from './emitter.js';
-import qs from './querystring.js';
+import { qs } from './querystring.js';
 
 export default class Avatar {
 	constructor(username, game) {

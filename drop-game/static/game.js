@@ -1,7 +1,7 @@
 import Avatar from './avatar.js';
 import constants from './constants.js';
 import emitter from './emitter.js';
-import qs from './querystring.js';
+import { qs } from './querystring.js';
 import Score from './score.js';
 import { twitch } from './twitch.js';
 import WebFontFile from './webfontfile.js';
