@@ -23,18 +23,12 @@ connected. Some require that the user be either a moderator or the broadcaster.
 
 ## Browser source
 
-Add the following URL (after the proscribed modifications) as a browser source
-in your streaming software of choice:
+### URL
 
-https://haliphax.github.io/drop-game/?username=USER&channel=CHANNEL&oauth=TOKEN
-
-You will need to replace the token values.
-
-- `USER` is the bot's username (or your username if you are not using a
-  separate account for the bot)
-- `CHANNEL` is the channel the bot should join (likely yours)
-- `TOKEN` is your OAuth token, which you can obtain using the
-  [Twitch Token Generator] (I will eventually add an OAuth flow to the project)
+Visit https://haliphax.github.io/drop-game/ and authorize the application via
+your Twitch account. Fill out and submit the _Overlay URL builder_ form. Copy
+the URL from your browser and add it as a browser source in your streaming
+software of choice.
 
 ### Optional URL parameters
 
@@ -49,8 +43,6 @@ Your updated URL for setting the `foobar` option to `100` would look like this:
 
 `https://haliphax.github.io/drop-game/?username=haliphax&channel=haliphax&oauth=MYTOKEN&foobar=100`
 
-Optional parameters:
-
 | Key | Default | Description |
 |-----|---------|-------------|
 | `demo` | undefined | If this key is present, the background of the game will be set to dark gray (for testing) |
@@ -64,4 +56,3 @@ Optional parameters:
 [PixelPlush]: https://pixelplush.dev
 [Twitch]: https://twitch.tv
 [tmi.js]: https://tmijs.org
-[Twitch Token Generator]: https://twitchtokengenerator.com
