@@ -4,6 +4,9 @@ import Game from './game.js';
 import { qs } from './querystring.js';
 import { isBroadcaster, isModerator, twitch } from './twitch.js';
 
+if (!qs.hasOwnProperty('oauth'))
+	window.location = constants.OAUTH_URL;
+
 if (qs.demo) document.body.classList.add('demo');
 
 const game = new Phaser.Game({
