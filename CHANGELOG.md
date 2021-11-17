@@ -1,5 +1,18 @@
 # Changelog
 
+<a name="1.1.2"></a>
+## 1.1.2 (2021-11-17)
+
+### Added
+
+- ✨ first pass at oauth flow [[c13bdca](https://github.com/haliphax/drop-game/commit/c13bdcad112ef86f783bb16b7bc46ea94031107b)]
+- ✨ add hash parsing to querystring.js [[543bec4](https://github.com/haliphax/drop-game/commit/543bec492538b9f9a9fde635ca17ad0545aad77d)]
+
+### Changed
+
+- 💄 viewport meta tag [[9153600](https://github.com/haliphax/drop-game/commit/91536004022a16ebb3b6a9279afb234bea923cf6)]
+
+
 <a name="1.0.2"></a>
 ## 1.0.2 (2021-10-28)
 
