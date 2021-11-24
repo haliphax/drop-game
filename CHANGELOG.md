@@ -1,5 +1,17 @@
 # Changelog
 
+<a name="1.2.0"></a>
+## 1.2.0 (2021-11-24)
+
+### Added
+
+- ✨ arguments for clearscores command [[21eb36a](https://github.com/haliphax/drop-game/commit/21eb36a1ad639f87d5f20064ef63da5ac2869904)]
+
+### Miscellaneous
+
+- 📝 update README with OAuth info [[9830572](https://github.com/haliphax/drop-game/commit/98305726c2ee9681fd79847b1fb725351cd25c5c)]
+
+
 <a name="1.1.2"></a>
 ## 1.1.2 (2021-11-17)
 
