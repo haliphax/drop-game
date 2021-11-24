@@ -1,5 +1,13 @@
 # Changelog
 
+<a name="1.3.0"></a>
+## 1.3.0 (2021-11-24)
+
+### Added
+
+- ✨ help command (and alias) [[ba1c26e](https://github.com/haliphax/drop-game/commit/ba1c26e7ed0a31e57fccae60a7b93d8acb3263e3)]
+
+
 <a name="1.2.0"></a>
 ## 1.2.0 (2021-11-24)
 
