@@ -50,6 +50,11 @@ twitch.on('message', (channel, tags, message, self) => {
 
 			emitter.emit('clearscores', who);
 			break;
+		case 'commands':
+		case 'help':
+			twitch.say(qs.channel,
+				`@${tags.username} -> Drop game commands: https://github.com/haliphax/drop-game/blob/master/README.md#commands`);
+			break;
 		case 'drop':
 			emitter.emit('drop', tags['display-name']);
 			break;

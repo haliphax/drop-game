@@ -13,10 +13,12 @@ connected. Some require that the user be either a moderator or the broadcaster.
 | Command | Access | Description |
 |---------|--------|-------------|
 | `!clearscores [username] [username...]` | Moderator | Reset the overlay's localStorage, clearing score records. If no usernames are provided, all records are wiped. |
+| `!commands` | Everyone | A link to this README section. |
 | `!drop` | Everyone | Play the game! |
 | `!droplow` | Everyone | Show the lowest score from the last 24 hours. |
 | `!droprecent` | Everyone | Show the most recent drop scores. |
 | `!droptop` | Everyone | Show the top score from the last 24 hours. |
+| `!help` | Everyone | Alias for `!commands`. |
 | `!queuedrop [seconds]` | Moderator | Begin a drop queue. The game either begins when `!startdrop` is called or after the number of seconds specified. |
 | `!resetdrop` | Moderator | Reset an in-progress drop game. |
 | `!startdrop` | Moderator | Drop everyone in the queue simultaneously. |
