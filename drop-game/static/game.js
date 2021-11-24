@@ -24,6 +24,7 @@ export default class Game extends Phaser.Scene {
 		emitter.on('droplow', this.onDropLow, this);
 		emitter.on('droprecent', this.onDropRecent, this);
 		emitter.on('droptop', this.onDropTop, this);
+		emitter.on('clearscores', this.onClearScores, this);
 		emitter.on('lose', this.onLose, this);
 		emitter.on('queuedrop', this.onQueueDrop, this);
 		emitter.on('resetdrop', this.onResetDrop, this);
@@ -33,6 +34,7 @@ export default class Game extends Phaser.Scene {
 		this.tidyScores();
 	}
 
+	/** @type {Score[]} */
 	get scores() {
 		return JSON.parse(localStorage.getItem('scores') || '[]');
 	}
@@ -305,6 +307,19 @@ export default class Game extends Phaser.Scene {
 		twitch.say(
 			qs.channel,
 			`Poooound Highest score in the past 24 hours: ${highest.username} ${highest.score.toFixed(2)}`);
+	}
+
+	onClearScores(who) {
+		if (!who) {
+			localStorage.clear();
+			twitch.say(qs.channel, 'Scores cleared.');
+		}
+		else {
+			const update = this.scores.filter(
+				v => !who.includes(v.username.toLowerCase()));
+			localStorage.setItem('scores', JSON.stringify(update));
+			twitch.say(qs.channel, `Scores cleared for ${who.join(', ')}.`);
+		}
 	}
 
 	onLose(avatar) {

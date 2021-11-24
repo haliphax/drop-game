@@ -46,8 +46,9 @@ twitch.on('message', (channel, tags, message, self) => {
 			if (!isBroadcaster(tags) && !isModerator(tags))
 				return;
 
-			localStorage.clear();
-			twitch.say(qs.channel, 'Scores cleared.');
+			const who = args ? args.split(' ').map(v => v.toLowerCase()) : null;
+
+			emitter.emit('clearscores', who);
 			break;
 		case 'drop':
 			emitter.emit('drop', tags['display-name']);

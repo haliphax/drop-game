@@ -12,7 +12,7 @@ connected. Some require that the user be either a moderator or the broadcaster.
 
 | Command | Access | Description |
 |---------|--------|-------------|
-| `!clearscores` | Moderator | Reset the overlay's localStorage, clearing all score records. |
+| `!clearscores [username] [username...]` | Moderator | Reset the overlay's localStorage, clearing score records. If no usernames are provided, all records are wiped. |
 | `!drop` | Everyone | Play the game! |
 | `!droplow` | Everyone | Show the lowest score from the last 24 hours. |
 | `!droprecent` | Everyone | Show the most recent drop scores. |
