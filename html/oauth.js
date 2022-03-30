@@ -1,4 +1,4 @@
-import { hs } from '../util.js';
+import { hs } from './util.js';
 
 const form = document.querySelector('form');
 
