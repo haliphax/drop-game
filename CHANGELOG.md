@@ -1,5 +1,19 @@
 # Changelog
 
+<a name="2.0.0"></a>
+## 2.0.0 (2022-03-30)
+
+### Fixed
+
+- 🐛 fix util reference in oauth.js [[653fbb1](https://github.com/haliphax/drop-game/commit/653fbb1b6213415ba14c3af0829b1a935dc1ed59)]
+
+### Miscellaneous
+
+- 📝 update URL examples in README to use hash [[9a41752](https://github.com/haliphax/drop-game/commit/9a417523639ec368201a689ff68deb94c47569ac)]
+-  👷 fix publish workflow to point to new static folder [[d0e9e81](https://github.com/haliphax/drop-game/commit/d0e9e8106447f9e645a433cd1d5b86a0e2a45ca9)]
+- 💥 reorg, use hash instead of querystring [[4b279e1](https://github.com/haliphax/drop-game/commit/4b279e1eba136f5b10e33ffed54e17e638b17f98)]
+
+
 <a name="1.3.0"></a>
 ## 1.3.0 (2021-11-24)
 
