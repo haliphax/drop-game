@@ -1,6 +1,6 @@
 import constants from './constants.js';
 import emitter from './emitter.js';
-import { qs } from './querystring.js';
+import { hs } from './util.js';
 
 export default class Avatar {
 	constructor(username, game) {
@@ -10,7 +10,7 @@ export default class Avatar {
 			.setVisible(false);
 		this.chute.angle = Math.random() * constants.MAX_SWAY
 			* (Math.random() < 0.5 ? -1 : 1);
-		this.chuteGravity = parseInt(qs.gravity_chute || constants.GRAVITY_CHUTE);
+		this.chuteGravity = parseInt(hs.gravity_chute || constants.GRAVITY_CHUTE);
 		this.spriteNumber = Math.ceil(Math.random() * constants.NUM_SPRITES);
 		this.sprite = game.add.image(0, 0, `drop${this.spriteNumber}`)
 			.setOrigin(0.5, 0.5)
@@ -42,7 +42,7 @@ export default class Avatar {
 		this.container.avatar = this;
 		game.physics.world.enableBody(this.container);
 
-		if (qs.debug)
+		if (hs.debug)
 			this.rect =
 				game.add.rectangle(0, 0, 0, 0)
 					.setStrokeStyle(2, 0xff00ff)
@@ -58,8 +58,8 @@ export default class Avatar {
 
 		const direction = Math.random() < 0.5 ? -1 : 1;
 		const velocity = Math.random()
-			* (qs.max_velocity
-				? parseInt(qs.max_velocity)
+			* (hs.max_velocity
+				? parseInt(hs.max_velocity)
 				: constants.MAX_VELOCITY)
 			* direction;
 
@@ -68,7 +68,7 @@ export default class Avatar {
 		this.container.body.setSize(this.sprite.width, this.sprite.height, true);
 		this.container.setSize(this.sprite.width, this.sprite.height, true);
 
-		if (qs.debug)
+		if (hs.debug)
 			this.rect.setSize(this.container.body.width, this.container.body.height);
 
 		this.container.x = Math.floor(
@@ -87,7 +87,7 @@ export default class Avatar {
 	update() {
 		if (!this.container.body) return;
 
-		if (qs.debug) {
+		if (hs.debug) {
 			this.rect.setPosition(this.container.body.x, this.container.body.y);
 			this.rect.angle = this.container.body.angle;
 		}

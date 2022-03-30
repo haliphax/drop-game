@@ -1,13 +1,13 @@
 import constants from './constants.js';
 import emitter from './emitter.js';
 import Game from './game.js';
-import { qs } from './querystring.js';
+import { hs } from './util.js';
 import { isBroadcaster, isModerator, twitch } from './twitch.js';
 
-if (!qs.hasOwnProperty('oauth'))
+if (!hs.hasOwnProperty('oauth'))
 	window.location = constants.OAUTH_URL;
 
-if (qs.demo) document.body.classList.add('demo');
+if (hs.demo) document.body.classList.add('demo');
 
 const game = new Phaser.Game({
 	height: constants.SCREEN_HEIGHT,
@@ -16,7 +16,7 @@ const game = new Phaser.Game({
 		arcade: {
 			debug: false,
 			gravity: {
-				y: (qs.gravity || constants.GRAVITY),
+				y: (hs.gravity || constants.GRAVITY),
 			},
 		},
 	},
@@ -52,7 +52,7 @@ twitch.on('message', (channel, tags, message, self) => {
 			break;
 		case 'commands':
 		case 'help':
-			twitch.say(qs.channel,
+			twitch.say(hs.channel,
 				`@${tags.username} -> Drop game commands: https://github.com/haliphax/drop-game/blob/master/README.md#commands`);
 			break;
 		case 'drop':

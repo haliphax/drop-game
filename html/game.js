@@ -1,7 +1,7 @@
 import Avatar from './avatar.js';
 import constants from './constants.js';
 import emitter from './emitter.js';
-import { qs } from './querystring.js';
+import { hs } from './util.js';
 import Score from './score.js';
 import { twitch } from './twitch.js';
 import WebFontFile from './webfontfile.js';
@@ -16,7 +16,7 @@ export default class Game extends Phaser.Scene {
 		this.droppersArray = [];
 		this.droppersQueue = {};
 		this.endTimer = false;
-		this.endWait = parseInt(qs.wait || constants.WAIT_FOR_RESET) * 1000;
+		this.endWait = parseInt(hs.wait || constants.WAIT_FOR_RESET) * 1000;
 		this.queue = false;
 		this.winner = null;
 
@@ -83,7 +83,7 @@ export default class Game extends Phaser.Scene {
 		this.physics.add.collider(
 			this.pad, this.dropGroup, this.landOnPad.bind(this));
 
-		if (qs.debug)
+		if (hs.debug)
 			this.rect =
 				this.add.rectangle(
 					0, this.pad.body.y, this.pad.body.width, this.pad.body.height)
@@ -119,7 +119,7 @@ export default class Game extends Phaser.Scene {
 			(this.pad.width / 2)
 				+ (Math.random() * (constants.SCREEN_WIDTH - this.pad.width)));
 
-		if (qs.debug)
+		if (hs.debug)
 			this.rect.x = this.pad.x;
 
 		this.pad.setVisible(true);
@@ -143,7 +143,7 @@ export default class Game extends Phaser.Scene {
 
 	resolveQueue() {
 		this.start();
-		twitch.say(qs.channel, 'Let\'s goooooooooooo! PogChamp')
+		twitch.say(hs.channel, 'Let\'s goooooooooooo! PogChamp')
 
 		for (let dropper of Object.keys(this.droppersQueue))
 			emitter.emit('drop', dropper, true);
@@ -231,7 +231,7 @@ export default class Game extends Phaser.Scene {
 		const scores = this.scores;
 
 		if (scores.length === 0)
-			return twitch.say(qs.channel, 'VoteNay No data.');
+			return twitch.say(hs.channel, 'VoteNay No data.');
 
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		let lowest = new Score(null, 101);
@@ -245,7 +245,7 @@ export default class Game extends Phaser.Scene {
 		}
 
 		twitch.say(
-			qs.channel,
+			hs.channel,
 			`ResidentSleeper Lowest score in the past 24 hours: ${lowest.username} ${lowest.score.toFixed(2)}`);
 	}
 
@@ -284,14 +284,14 @@ export default class Game extends Phaser.Scene {
 			.map(v => `${v.username} (${v.score.toFixed(2)})`)
 			.join(', ');
 
-		twitch.say(qs.channel, `OhMyDog Recent drops: ${out}`);
+		twitch.say(hs.channel, `OhMyDog Recent drops: ${out}`);
 	}
 
 	onDropTop() {
 		const scores = this.scores;
 
 		if (scores.length === 0)
-			return twitch.say(qs.channel, 'VoteNay No data.');
+			return twitch.say(hs.channel, 'VoteNay No data.');
 
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		let highest = new Score(null, 0);
@@ -305,20 +305,20 @@ export default class Game extends Phaser.Scene {
 		}
 
 		twitch.say(
-			qs.channel,
+			hs.channel,
 			`Poooound Highest score in the past 24 hours: ${highest.username} ${highest.score.toFixed(2)}`);
 	}
 
 	onClearScores(who) {
 		if (!who) {
 			localStorage.clear();
-			twitch.say(qs.channel, 'Scores cleared.');
+			twitch.say(hs.channel, 'Scores cleared.');
 		}
 		else {
 			const update = this.scores.filter(
 				v => !who.includes(v.username.toLowerCase()));
 			localStorage.setItem('scores', JSON.stringify(update));
-			twitch.say(qs.channel, `Scores cleared for ${who.join(', ')}.`);
+			twitch.say(hs.channel, `Scores cleared for ${who.join(', ')}.`);
 		}
 	}
 
@@ -338,7 +338,7 @@ export default class Game extends Phaser.Scene {
 
 	onQueueDrop(delay = null) {
 		if (this.queue) {
-			twitch.say(qs.channel, 'NotLikeThis A queue is already forming!');
+			twitch.say(hs.channel, 'NotLikeThis A queue is already forming!');
 			return;
 		}
 
@@ -347,7 +347,7 @@ export default class Game extends Phaser.Scene {
 		if (delay !== null)
 			setTimeout(this.resolveQueue.bind(this), delay * 1000);
 
-		twitch.say(qs.channel, 'SeemsGood Queue started!');
+		twitch.say(hs.channel, 'SeemsGood Queue started!');
 	}
 
 	onResetDrop() {
