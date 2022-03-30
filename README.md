@@ -35,15 +35,15 @@ software of choice.
 ### Optional URL parameters
 
 There are several options you can play with that are exposed as optional URL
-query string parameters. For each one of these, be sure you separate the new
-key/value combination from the existing URL with a '&' character. For example,
-if your original URL was this:
+hash parameters. For each one of these, be sure you separate the new key/value
+combination from the existing URL with a '&' character. For example, if your
+original URL was this:
 
-`https://haliphax.github.io/drop-game/?username=haliphax&channel=haliphax&oauth=MYTOKEN`
+`https://haliphax.github.io/drop-game/#username=haliphax&channel=haliphax&oauth=MYTOKEN`
 
 Your updated URL for setting the `foobar` option to `100` would look like this:
 
-`https://haliphax.github.io/drop-game/?username=haliphax&channel=haliphax&oauth=MYTOKEN&foobar=100`
+`https://haliphax.github.io/drop-game/#username=haliphax&channel=haliphax&oauth=MYTOKEN&foobar=100`
 
 | Key | Default | Description |
 |-----|---------|-------------|
