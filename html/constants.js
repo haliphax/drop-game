@@ -4,9 +4,9 @@ const constants = {
 	/** random spread for bump */
 	BUMP_SPREAD: 20,
 	/** Twitch Client ID for hxDrop */
-	CLIENT_ID: 'avj8ew0h1zd2t3wqu8h10855wirov8',
+	CLIENT_ID: "avj8ew0h1zd2t3wqu8h10855wirov8",
 	/** font family for labels */
-	FONT_FAMILY: 'Syne Mono',
+	FONT_FAMILY: "Syne Mono",
 	/** default force of gravity */
 	GRAVITY: 400,
 	/** default force of gravity with chute */
@@ -30,7 +30,7 @@ const constants = {
 	/** width of screen */
 	SCREEN_WIDTH: 1920,
 	/** font stroke color */
-	STROKE_COLOR: '#000',
+	STROKE_COLOR: "#000",
 	/** font stroke thickness */
 	STROKE_THICKNESS: 6,
 	/** number of seconds between score tidying */
@@ -43,10 +43,13 @@ const constants = {
 	WAIT_FOR_RESET: 60,
 };
 
-constants.OAUTH_URL = `https://id.twitch.tv/oauth2/authorize`
-	+ `?client_id=${constants.CLIENT_ID}`
-	+ `&redirect_uri=${encodeURIComponent(window.location.href.replace(/[^/]\.html|$/i, 'oauth.html'))}`
-  + `&response_type=token`
-  + `&scope=chat:read%20chat:edit`;
+constants.OAUTH_URL =
+	`https://id.twitch.tv/oauth2/authorize` +
+	`?client_id=${constants.CLIENT_ID}` +
+	`&redirect_uri=${encodeURIComponent(
+		window.location.href.replace(/[^/]\.html|$/i, "oauth.html"),
+	)}` +
+	`&response_type=token` +
+	`&scope=chat:read%20chat:edit`;
 
 export default constants;

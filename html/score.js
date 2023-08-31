@@ -8,9 +8,7 @@ export default class Score {
 		this.username = username;
 		this.score = score;
 
-		if (when === null)
-			this.when = Date.now();
-		else
-			this.when = when;
+		if (when === null) this.when = Date.now();
+		else this.when = when;
 	}
-};
+}

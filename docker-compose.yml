@@ -1,21 +1,21 @@
-version: '3'
+version: "3"
 networks:
   external:
   internal:
 services:
   nginx:
     depends_on:
-        - traefik
+      - traefik
     image: nginx:latest
     labels:
-        - traefik.http.routers.dropgame.entrypoints=websecure
-        - traefik.http.routers.dropgame.rule=Host(`localhost`)
-        - traefik.http.routers.dropgame.service=dropgame
-        - traefik.http.routers.dropgame.tls=true
-        - traefik.http.services.dropgame.loadbalancer.server.port=80
+      - traefik.http.routers.dropgame.entrypoints=websecure
+      - traefik.http.routers.dropgame.rule=Host(`localhost`)
+      - traefik.http.routers.dropgame.service=dropgame
+      - traefik.http.routers.dropgame.tls=true
+      - traefik.http.services.dropgame.loadbalancer.server.port=80
     restart: unless-stopped
     volumes:
-        - ./html:/usr/share/nginx/html:ro
+      - ./html:/usr/share/nginx/html:ro
   traefik:
     image: traefik:2.6
     ports:

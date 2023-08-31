@@ -1,2 +1,2 @@
 /** emitter for managing external events */
-export default new Phaser.Events.EventEmitter()
+export default new Phaser.Events.EventEmitter();

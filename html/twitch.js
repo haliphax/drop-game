@@ -1,4 +1,4 @@
-import { hs } from './util.js';
+import { hs } from "./util.js";
 
 const twitch = new tmi.Client({
 	options: { debug: true },
@@ -9,11 +9,7 @@ const twitch = new tmi.Client({
 	},
 });
 
-const isBroadcaster = (tags) => tags.badges.hasOwnProperty('broadcaster');
+const isBroadcaster = (tags) => tags.badges.hasOwnProperty("broadcaster");
 const isModerator = (tags) => tags.mod;
 
-export {
-	isBroadcaster,
-	isModerator,
-	twitch,
-}
+export { isBroadcaster, isModerator, twitch };

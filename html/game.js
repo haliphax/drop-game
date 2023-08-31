@@ -1,10 +1,10 @@
-import Avatar from './avatar.js';
-import constants from './constants.js';
-import emitter from './emitter.js';
-import { hs } from './util.js';
-import Score from './score.js';
-import { twitch } from './twitch.js';
-import WebFontFile from './webfontfile.js';
+import Avatar from "./avatar.js";
+import constants from "./constants.js";
+import emitter from "./emitter.js";
+import { hs } from "./util.js";
+import Score from "./score.js";
+import { twitch } from "./twitch.js";
+import WebFontFile from "./webfontfile.js";
 
 /** main game scene */
 export default class Game extends Phaser.Scene {
@@ -20,15 +20,15 @@ export default class Game extends Phaser.Scene {
 		this.queue = false;
 		this.winner = null;
 
-		emitter.on('drop', this.onDrop, this);
-		emitter.on('droplow', this.onDropLow, this);
-		emitter.on('droprecent', this.onDropRecent, this);
-		emitter.on('droptop', this.onDropTop, this);
-		emitter.on('clearscores', this.onClearScores, this);
-		emitter.on('lose', this.onLose, this);
-		emitter.on('queuedrop', this.onQueueDrop, this);
-		emitter.on('resetdrop', this.onResetDrop, this);
-		emitter.on('startdrop', this.onStartDrop, this);
+		emitter.on("drop", this.onDrop, this);
+		emitter.on("droplow", this.onDropLow, this);
+		emitter.on("droprecent", this.onDropRecent, this);
+		emitter.on("droptop", this.onDropTop, this);
+		emitter.on("clearscores", this.onClearScores, this);
+		emitter.on("lose", this.onLose, this);
+		emitter.on("queuedrop", this.onQueueDrop, this);
+		emitter.on("resetdrop", this.onResetDrop, this);
+		emitter.on("startdrop", this.onStartDrop, this);
 
 		setTimeout(this.tidyScores.bind(this), constants.TIDY_SCHEDULE);
 		this.tidyScores();
@@ -36,26 +36,26 @@ export default class Game extends Phaser.Scene {
 
 	/** @type {Score[]} */
 	get scores() {
-		return JSON.parse(localStorage.getItem('scores') || '[]');
+		return JSON.parse(localStorage.getItem("scores") || "[]");
 	}
 
 	preload() {
 		this.load.addFile(new WebFontFile(this.load, constants.FONT_FAMILY));
-		this.load.setBaseURL('./assets/default');
-		this.load.image('chute', 'chute.png');
-		this.load.image('drop1', 'drop1.png');
-		this.load.image('drop2', 'drop2.png');
-		this.load.image('drop3', 'drop3.png');
-		this.load.image('drop4', 'drop4.png');
-		this.load.image('drop5', 'drop5.png');
-		this.load.image('pad', 'pad.png');
+		this.load.setBaseURL("./assets/default");
+		this.load.image("chute", "chute.png");
+		this.load.image("drop1", "drop1.png");
+		this.load.image("drop2", "drop2.png");
+		this.load.image("drop3", "drop3.png");
+		this.load.image("drop4", "drop4.png");
+		this.load.image("drop5", "drop5.png");
+		this.load.image("pad", "pad.png");
 	}
 
 	create() {
 		this.physics.world
 			.setBounds(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
 			.setBoundsCollision(true, true, false, false);
-		this.pad = this.physics.add.image(0, 0, 'pad');
+		this.pad = this.physics.add.image(0, 0, "pad");
 		this.pad
 			.setMaxVelocity(0, 0)
 			.setOrigin(0.5, 1)
@@ -75,18 +75,28 @@ export default class Game extends Phaser.Scene {
 			collideWorldBounds: true,
 		});
 		this.physics.add.collider(
-			this.dropGroup, this.dropGroup, this.crash.bind(this));;
+			this.dropGroup,
+			this.dropGroup,
+			this.crash.bind(this),
+		);
 
 		this.pad.body.immovable = true;
 		this.pad.body.allowGravity = false;
 		this.pad.body.setSize(this.pad.width, this.pad.height, true);
 		this.physics.add.collider(
-			this.pad, this.dropGroup, this.landOnPad.bind(this));
+			this.pad,
+			this.dropGroup,
+			this.landOnPad.bind(this),
+		);
 
 		if (hs.debug)
-			this.rect =
-				this.add.rectangle(
-					0, this.pad.body.y, this.pad.body.width, this.pad.body.height)
+			this.rect = this.add
+				.rectangle(
+					0,
+					this.pad.body.y,
+					this.pad.body.width,
+					this.pad.body.height,
+				)
 				.setOrigin(0.5, 0)
 				.setDepth(1)
 				.setStrokeStyle(2, 0xff0ff);
@@ -94,20 +104,19 @@ export default class Game extends Phaser.Scene {
 
 	update(time, delta) {
 		for (let drop of this.droppersArray) {
-			if (!drop.active)
-				continue;
+			if (!drop.active) continue;
 
 			drop.update();
 		}
 	}
 
 	tidyScores() {
-		console.debug('Tidying scores');
+		console.debug("Tidying scores");
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		const scores = this.scores;
-		const update = scores.filter(v => v.when > expiry);
-		localStorage.setItem('scores', JSON.stringify(update));
-		console.debug('Tidy scores complete');
+		const update = scores.filter((v) => v.when > expiry);
+		localStorage.setItem("scores", JSON.stringify(update));
+		console.debug("Tidy scores complete");
 	}
 
 	start() {
@@ -116,11 +125,11 @@ export default class Game extends Phaser.Scene {
 		this.droppersArray = [];
 		this.winner = null;
 		this.pad.x = Math.floor(
-			(this.pad.width / 2)
-				+ (Math.random() * (constants.SCREEN_WIDTH - this.pad.width)));
+			this.pad.width / 2 +
+				Math.random() * (constants.SCREEN_WIDTH - this.pad.width),
+		);
 
-		if (hs.debug)
-			this.rect.x = this.pad.x;
+		if (hs.debug) this.rect.x = this.pad.x;
 
 		this.pad.setVisible(true);
 		console.debug(`Pad X Position: ${this.pad.x}`);
@@ -132,8 +141,7 @@ export default class Game extends Phaser.Scene {
 		this.droppersQueue = {};
 		this.pad.setVisible(false);
 
-		for (let drop of this.droppersArray)
-			drop.container.destroy();
+		for (let drop of this.droppersArray) drop.container.destroy();
 	}
 
 	resetTimer() {
@@ -143,21 +151,20 @@ export default class Game extends Phaser.Scene {
 
 	resolveQueue() {
 		this.start();
-		twitch.say(hs.channel, 'Let\'s goooooooooooo! PogChamp')
+		twitch.say(hs.channel, "Let's goooooooooooo! PogChamp");
 
 		for (let dropper of Object.keys(this.droppersQueue))
-			emitter.emit('drop', dropper, true);
+			emitter.emit("drop", dropper, true);
 	}
 
-	crash (a, b) {
+	crash(a, b) {
 		for (let container of [a, b])
-			container.body.velocity.y = -1 * (
-				(Math.random() * constants.BUMP_MIN) + constants.BUMP_SPREAD);
+			container.body.velocity.y =
+				-1 * (Math.random() * constants.BUMP_MIN + constants.BUMP_SPREAD);
 	}
 
-	landOnPad (pad, drop) {
-		if (!drop.body.touching.down || !pad.body.touching.up)
-			return;
+	landOnPad(pad, drop) {
+		if (!drop.body.touching.down || !pad.body.touching.up) return;
 
 		const halfPad = Math.ceil(pad.width / 2);
 		const halfDrop = Math.ceil(drop.width / 2);
@@ -183,13 +190,13 @@ export default class Game extends Phaser.Scene {
 		const scores = this.scores;
 
 		scores.push(new Score(avatar.username, avatar.score));
-		localStorage.setItem('scores', JSON.stringify(scores));
+		localStorage.setItem("scores", JSON.stringify(scores));
 
 		if (this.winner && avatar.score < this.winner.score)
-			return emitter.emit('lose', avatar);
+			return emitter.emit("lose", avatar);
 
 		if (this.winner) {
-			emitter.emit('lose', this.winner);
+			emitter.emit("lose", this.winner);
 			this.winner.container.setDepth(0);
 		}
 
@@ -202,18 +209,12 @@ export default class Game extends Phaser.Scene {
 	// events
 
 	onDrop(username, queue = false) {
-		if (!this.active && !this.queue)
-			this.start();
-		else if (this.active && this.queue && !queue)
-			return;
+		if (!this.active && !this.queue) this.start();
+		else if (this.active && this.queue && !queue) return;
 
-		if (this.queue && !queue
-			&& this.droppersQueue.hasOwnProperty(username))
-		{
+		if (this.queue && !queue && this.droppersQueue.hasOwnProperty(username)) {
 			return;
-		}
-		else if (!this.queue && this.droppers.hasOwnProperty(username))
-			return;
+		} else if (!this.queue && this.droppers.hasOwnProperty(username)) return;
 
 		if (this.queue && !queue) {
 			this.droppersQueue[username] = true;
@@ -230,23 +231,23 @@ export default class Game extends Phaser.Scene {
 	onDropLow() {
 		const scores = this.scores;
 
-		if (scores.length === 0)
-			return twitch.say(hs.channel, 'VoteNay No data.');
+		if (scores.length === 0) return twitch.say(hs.channel, "VoteNay No data.");
 
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		let lowest = new Score(null, 101);
 
 		for (let score of scores) {
-			if (score.when < expiry)
-				continue;
+			if (score.when < expiry) continue;
 
-			if (score.score < lowest.score)
-				lowest = score;
+			if (score.score < lowest.score) lowest = score;
 		}
 
 		twitch.say(
 			hs.channel,
-			`ResidentSleeper Lowest score in the past 24 hours: ${lowest.username} ${lowest.score.toFixed(2)}`);
+			`ResidentSleeper Lowest score in the past 24 hours: ${
+				lowest.username
+			} ${lowest.score.toFixed(2)}`,
+		);
 	}
 
 	onDropRecent() {
@@ -257,23 +258,19 @@ export default class Game extends Phaser.Scene {
 		let oldest = new Score(null, 0, 0);
 
 		for (let score of scores) {
-			if (score.when < expiry)
-				continue;
+			if (score.when < expiry) continue;
 
 			if (recent.hasOwnProperty(score.username)) {
 				if (recent[score.username].when < score.when)
 					recent[score.username] = score;
-			}
-			else if (tracking < constants.RECENT_SCORES
-				|| score.when > oldest.when)
-			{
-				if (tracking >= constants.RECENT_SCORES)
-					delete recent[oldest.username];
-				else
-					tracking++;
+			} else if (
+				tracking < constants.RECENT_SCORES ||
+				score.when > oldest.when
+			) {
+				if (tracking >= constants.RECENT_SCORES) delete recent[oldest.username];
+				else tracking++;
 
-				if (score.when > oldest.when)
-					oldest = score;
+				if (score.when > oldest.when) oldest = score;
 
 				recent[score.username] = score;
 			}
@@ -281,8 +278,8 @@ export default class Game extends Phaser.Scene {
 
 		const out = Object.values(recent)
 			.sort((a, b) => a.when - b.when)
-			.map(v => `${v.username} (${v.score.toFixed(2)})`)
-			.join(', ');
+			.map((v) => `${v.username} (${v.score.toFixed(2)})`)
+			.join(", ");
 
 		twitch.say(hs.channel, `OhMyDog Recent drops: ${out}`);
 	}
@@ -290,35 +287,35 @@ export default class Game extends Phaser.Scene {
 	onDropTop() {
 		const scores = this.scores;
 
-		if (scores.length === 0)
-			return twitch.say(hs.channel, 'VoteNay No data.');
+		if (scores.length === 0) return twitch.say(hs.channel, "VoteNay No data.");
 
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		let highest = new Score(null, 0);
 
 		for (let score of scores) {
-			if (score.when < expiry)
-				continue;
+			if (score.when < expiry) continue;
 
-			if (score.score > highest.score)
-				highest = score;
+			if (score.score > highest.score) highest = score;
 		}
 
 		twitch.say(
 			hs.channel,
-			`Poooound Highest score in the past 24 hours: ${highest.username} ${highest.score.toFixed(2)}`);
+			`Poooound Highest score in the past 24 hours: ${
+				highest.username
+			} ${highest.score.toFixed(2)}`,
+		);
 	}
 
 	onClearScores(who) {
 		if (!who) {
 			localStorage.clear();
-			twitch.say(hs.channel, 'Scores cleared.');
-		}
-		else {
+			twitch.say(hs.channel, "Scores cleared.");
+		} else {
 			const update = this.scores.filter(
-				v => !who.includes(v.username.toLowerCase()));
-			localStorage.setItem('scores', JSON.stringify(update));
-			twitch.say(hs.channel, `Scores cleared for ${who.join(', ')}.`);
+				(v) => !who.includes(v.username.toLowerCase()),
+			);
+			localStorage.setItem("scores", JSON.stringify(update));
+			twitch.say(hs.channel, `Scores cleared for ${who.join(", ")}.`);
 		}
 	}
 
@@ -338,16 +335,15 @@ export default class Game extends Phaser.Scene {
 
 	onQueueDrop(delay = null) {
 		if (this.queue) {
-			twitch.say(hs.channel, 'NotLikeThis A queue is already forming!');
+			twitch.say(hs.channel, "NotLikeThis A queue is already forming!");
 			return;
 		}
 
 		this.queue = true;
 
-		if (delay !== null)
-			setTimeout(this.resolveQueue.bind(this), delay * 1000);
+		if (delay !== null) setTimeout(this.resolveQueue.bind(this), delay * 1000);
 
-		twitch.say(hs.channel, 'SeemsGood Queue started!');
+		twitch.say(hs.channel, "SeemsGood Queue started!");
 	}
 
 	onResetDrop() {
@@ -355,8 +351,7 @@ export default class Game extends Phaser.Scene {
 	}
 
 	onStartDrop() {
-		if (!this.queue)
-			return;
+		if (!this.queue) return;
 
 		this.resolveQueue();
 	}
