@@ -1,4 +1,5 @@
 /docker-compose.override.yml
 /html/tmi.min.js
 .vscode/
+node_modules/
 
