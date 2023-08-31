@@ -1,22 +1,21 @@
-import constants from './constants.js';
-import emitter from './emitter.js';
-import Game from './game.js';
-import { hs } from './util.js';
-import { isBroadcaster, isModerator, twitch } from './twitch.js';
+import constants from "./constants.js";
+import emitter from "./emitter.js";
+import Game from "./game.js";
+import { hs } from "./util.js";
+import { isBroadcaster, isModerator, twitch } from "./twitch.js";
 
-if (!hs.hasOwnProperty('oauth'))
-	window.location = constants.OAUTH_URL;
+if (!hs.hasOwnProperty("oauth")) window.location = constants.OAUTH_URL;
 
-if (hs.demo) document.body.classList.add('demo');
+if (hs.demo) document.body.classList.add("demo");
 
 const game = new Phaser.Game({
 	height: constants.SCREEN_HEIGHT,
 	physics: {
-		default: 'arcade',
+		default: "arcade",
 		arcade: {
 			debug: false,
 			gravity: {
-				y: (hs.gravity || constants.GRAVITY),
+				y: hs.gravity || constants.GRAVITY,
 			},
 		},
 	},
@@ -31,7 +30,7 @@ const game = new Phaser.Game({
 
 const commandRgx = /^(\![-_.a-z0-9]+)(?:\s+(.+))?$/i;
 
-twitch.on('message', (channel, tags, message, self) => {
+twitch.on("message", (channel, tags, message, self) => {
 	const cmd = commandRgx.exec(message);
 
 	if (self || !cmd) return;
@@ -42,48 +41,46 @@ twitch.on('message', (channel, tags, message, self) => {
 	// TODO: command timeouts
 
 	switch (command) {
-		case 'clearscores':
-			if (!isBroadcaster(tags) && !isModerator(tags))
-				return;
+		case "clearscores":
+			if (!isBroadcaster(tags) && !isModerator(tags)) return;
 
-			const who = args ? args.split(' ').map(v => v.toLowerCase()) : null;
+			const who = args ? args.split(" ").map((v) => v.toLowerCase()) : null;
 
-			emitter.emit('clearscores', who);
+			emitter.emit("clearscores", who);
 			break;
-		case 'commands':
-		case 'help':
-			twitch.say(hs.channel,
-				`@${tags.username} -> Drop game commands: https://github.com/haliphax/drop-game/blob/master/README.md#commands`);
+		case "commands":
+		case "help":
+			twitch.say(
+				hs.channel,
+				`@${tags.username} -> Drop game commands: https://github.com/haliphax/drop-game/blob/main/README.md#commands`,
+			);
 			break;
-		case 'drop':
-			emitter.emit('drop', tags['display-name']);
+		case "drop":
+			emitter.emit("drop", tags["display-name"]);
 			break;
-		case 'droplow':
-			emitter.emit('droplow');
+		case "droplow":
+			emitter.emit("droplow");
 			break;
-		case 'droptop':
-			emitter.emit('droptop');
+		case "droptop":
+			emitter.emit("droptop");
 			break;
-		case 'droprecent':
-			emitter.emit('droprecent');
+		case "droprecent":
+			emitter.emit("droprecent");
 			break;
-		case 'queuedrop':
-			if (!isBroadcaster(tags) && !isModerator(tags))
-				return;
+		case "queuedrop":
+			if (!isBroadcaster(tags) && !isModerator(tags)) return;
 
-			emitter.emit('queuedrop', args ? parseInt(args) : null);
+			emitter.emit("queuedrop", args ? parseInt(args) : null);
 			break;
-		case 'resetdrop':
-			if (!isBroadcaster(tags) && !isModerator(tags))
-				return;
+		case "resetdrop":
+			if (!isBroadcaster(tags) && !isModerator(tags)) return;
 
-			emitter.emit('resetdrop');
+			emitter.emit("resetdrop");
 			break;
-		case 'startdrop':
-			if (!isBroadcaster(tags) && !isModerator(tags))
-				return;
+		case "startdrop":
+			if (!isBroadcaster(tags) && !isModerator(tags)) return;
 
-			emitter.emit('startdrop');
+			emitter.emit("startdrop");
 			break;
 	}
 });
