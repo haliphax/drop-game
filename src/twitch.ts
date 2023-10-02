@@ -1,4 +1,5 @@
-import { hs } from "./util.js";
+import tmi, { ChatUserstate } from "tmi.js";
+import { hs } from "./util";
 
 const twitch = new tmi.Client({
 	options: { debug: true },
@@ -9,7 +10,7 @@ const twitch = new tmi.Client({
 	},
 });
 
-const isBroadcaster = (tags) => tags.badges.hasOwnProperty("broadcaster");
-const isModerator = (tags) => tags.mod;
+const isBroadcaster = (tags: ChatUserstate) => tags.badges?.broadcaster;
+const isModerator = (tags: ChatUserstate) => tags.mod;
 
 export { isBroadcaster, isModerator, twitch };

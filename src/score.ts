@@ -1,10 +1,14 @@
 /** Class structure for holding scores */
 export default class Score {
-	username;
-	score;
-	when;
+	username: string | null;
+	score: integer;
+	when: number;
 
-	constructor(username, score, when = null) {
+	constructor(
+		username: string | null,
+		score: integer,
+		when: number | null = null,
+	) {
 		this.username = username;
 		this.score = score;
 

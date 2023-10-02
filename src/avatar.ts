@@ -1,16 +1,32 @@
-import constants from "./constants.js";
-import emitter from "./emitter.js";
-import { hs } from "./util.js";
+import { Tweens } from "phaser";
+import constants from "./constants";
+import emitter from "./emitter";
+import { hs } from "./util";
 
 export default class Avatar {
-	constructor(username, game) {
+	active: boolean;
+	chute: Phaser.GameObjects.Image;
+	chuteGravity: integer;
+	container: Phaser.GameObjects.Container;
+	label: Phaser.GameObjects.Text | null;
+	rect?: Phaser.GameObjects.Rectangle;
+	score: integer;
+	scoreLabel: Phaser.GameObjects.Text | null;
+	sprite: Phaser.GameObjects.Image;
+	spriteNumber: integer;
+	swayTween: Tweens.Tween | null = null;
+	username: string;
+
+	constructor(username: string, game: Phaser.Scene) {
 		this.username = username;
 		this.chute = game.add
 			.image(0, 0, "chute")
 			.setOrigin(0.5, 1)
 			.setVisible(false);
+		/*
 		this.chute.angle =
 			Math.random() * constants.MAX_SWAY * (Math.random() < 0.5 ? -1 : 1);
+		*/
 		this.chuteGravity = parseInt(hs.gravity_chute || constants.GRAVITY_CHUTE);
 		this.spriteNumber = Math.ceil(Math.random() * constants.NUM_SPRITES);
 		this.sprite = game.add
@@ -35,10 +51,9 @@ export default class Avatar {
 			.setOrigin(0.5, 1)
 			.setVisible(false);
 		this.score = -1;
-		this.swayDirection = -1;
 		this.active = true;
 		this.container = game.add.container();
-		this.container.avatar = this;
+		this.container.setData("avatar", this);
 		game.physics.world.enableBody(this.container);
 
 		if (hs.debug)
@@ -51,23 +66,25 @@ export default class Avatar {
 		setTimeout(this.ready.bind(this), 100);
 	}
 
-	ready() {
-		if (this.container.body == undefined)
-			return setTimeout(this.ready.bind(this, game), 100);
+	ready(): void {
+		if (this.container.body == undefined) {
+			setTimeout(this.ready.bind(this), 100);
+			return;
+		}
 
+		const body = this.container.body as Phaser.Physics.Arcade.Body;
 		const direction = Math.random() < 0.5 ? -1 : 1;
 		const velocity =
 			Math.random() *
 			(hs.max_velocity ? parseInt(hs.max_velocity) : constants.MAX_VELOCITY) *
 			direction;
 
-		this.container.body.pushable = true;
-		this.container.body.velocity.x = velocity;
-		this.container.body.setSize(this.sprite.width, this.sprite.height, true);
-		this.container.setSize(this.sprite.width, this.sprite.height, true);
+		body.pushable = true;
+		body.velocity.x = velocity;
+		body.setSize(this.sprite.width, this.sprite.height, true);
+		this.container.setSize(this.sprite.width, this.sprite.height);
 
-		if (hs.debug)
-			this.rect.setSize(this.container.body.width, this.container.body.height);
+		if (hs.debug) this.rect?.setSize(body.width, body.height);
 
 		this.container.x = Math.floor(
 			this.sprite.width / 2 +
@@ -75,8 +92,8 @@ export default class Avatar {
 		);
 		this.container.add(this.chute);
 		this.container.add(this.sprite);
-		this.container.add(this.label);
-		this.container.add(this.scoreLabel);
+		this.container.add(this.label!);
+		this.container.add(this.scoreLabel!);
 		this.sprite.visible = true;
 		console.debug(`Dropper: ${this.username}`);
 		console.debug(`X Velocity: ${this.container.body.velocity.x}`);
@@ -86,9 +103,11 @@ export default class Avatar {
 	update() {
 		if (!this.container.body) return;
 
-		if (hs.debug) {
-			this.rect.setPosition(this.container.body.x, this.container.body.y);
-			this.rect.angle = this.container.body.angle;
+		const body = this.container.body as Phaser.Physics.Arcade.Body;
+
+		if (hs.debug && this.rect) {
+			this.rect.setPosition(body.x, body.y);
+			this.rect.angle = body.angle;
 		}
 
 		if (
@@ -101,17 +120,23 @@ export default class Avatar {
 		if (this.chute.visible) {
 			if (this.container.body.velocity.y > this.chuteGravity)
 				this.container.body.velocity.y = this.chuteGravity;
-
-			if (
-				this.sprite.angle > constants.MAX_SWAY ||
-				this.sprite.angle < -constants.MAX_SWAY
-			) {
-				this.swayDirection = 0 - this.swayDirection;
-			}
-
-			this.chute.angle += this.swayDirection / 2;
-			this.chute.setPosition(this.sprite.x, this.sprite.y);
-		} else if (this.container.body.y >= this.sprite.height) {
+		} else if (body.y >= this.sprite.height) {
+			this.swayTween = this.sprite.scene.add.tween({
+				duration: 2000,
+				props: {
+					angle: {
+						getEnd() {
+							return constants.MAX_SWAY;
+						},
+						getStart() {
+							return -constants.MAX_SWAY;
+						},
+					},
+				},
+				repeat: -1,
+				targets: this.chute,
+				yoyo: true,
+			});
 			this.chute.visible = true;
 		}
 

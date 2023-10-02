@@ -18,4 +18,3 @@ exec < /dev/tty
 npx --package=gitmoji-cli -- gitmoji --hook \$1 \$2
 EOF
 chmod a+x "$hook"
-

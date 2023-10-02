@@ -20,7 +20,7 @@ const constants = {
 	/** number of sprites */
 	NUM_SPRITES: 5,
 	/** URL for obtaining OAuth token */
-	OAUTH_URL: null,
+	OAUTH_URL: "",
 	/** number of recent scores to list with !droprecent */
 	RECENT_SCORES: 10,
 	/** score label font size */

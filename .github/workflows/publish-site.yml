@@ -1,4 +1,5 @@
-name: Publish service
+name: Publish site
+
 on:
   push:
     branches: [main]
@@ -9,15 +10,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Build
-        run: |
-          wget https://github.com/tmijs/tmi.js/releases/download/v1.8.5/tmi.min.js -O ./html/tmi.min.js
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build site
+        run: npm run build
+
+      - name: Relative URLs
+        run: sed -i -e 's/="\//="/g' dist/index.html
 
       - uses: actions/upload-pages-artifact@v2
         with:
-          path: html/
+          path: dist/
 
   deploy:
     runs-on: ubuntu-latest

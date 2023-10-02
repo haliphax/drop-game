@@ -1,21 +1,33 @@
-import Avatar from "./avatar.js";
-import constants from "./constants.js";
-import emitter from "./emitter.js";
-import { hs } from "./util.js";
-import Score from "./score.js";
-import { twitch } from "./twitch.js";
-import WebFontFile from "./webfontfile.js";
+import Phaser, { Tilemaps } from "phaser";
+import Avatar from "./avatar";
+import constants from "./constants";
+import emitter from "./emitter";
+import Score from "./score";
+import { twitch } from "./twitch";
+import { hs } from "./util";
+import WebFontFile from "./webfontfile";
 
 /** main game scene */
 export default class Game extends Phaser.Scene {
+	active: boolean;
+	dropGroup: Phaser.Physics.Arcade.Group | null;
+	droppers: Map<string, Avatar>;
+	droppersArray: Array<Avatar>;
+	droppersQueue: Set<string>;
+	endTimer?: NodeJS.Timeout;
+	endWait: integer;
+	pad: Phaser.Physics.Arcade.Image | null = null;
+	rect: Phaser.GameObjects.Rectangle | null = null;
+	queue: boolean;
+	winner: Avatar | null;
+
 	constructor() {
 		super();
 		this.active = false;
 		this.dropGroup = null;
-		this.droppers = {};
+		this.droppers = new Map<string, Avatar>();
 		this.droppersArray = [];
-		this.droppersQueue = {};
-		this.endTimer = false;
+		this.droppersQueue = new Set<string>();
 		this.endWait = parseInt(hs.wait || constants.WAIT_FOR_RESET) * 1000;
 		this.queue = false;
 		this.winner = null;
@@ -41,7 +53,7 @@ export default class Game extends Phaser.Scene {
 
 	preload() {
 		this.load.addFile(new WebFontFile(this.load, constants.FONT_FAMILY));
-		this.load.setBaseURL("./assets/default");
+		this.load.setBaseURL("./default");
 		this.load.image("chute", "chute.png");
 		this.load.image("drop1", "drop1.png");
 		this.load.image("drop2", "drop2.png");
@@ -54,7 +66,7 @@ export default class Game extends Phaser.Scene {
 	create() {
 		this.physics.world
 			.setBounds(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
-			.setBoundsCollision(true, true, false, false);
+			.setBoundsCollision(true, true, false, true);
 		this.pad = this.physics.add.image(0, 0, "pad");
 		this.pad
 			.setMaxVelocity(0, 0)
@@ -65,9 +77,11 @@ export default class Game extends Phaser.Scene {
 		setTimeout(this.ready.bind(this), 100);
 	}
 
-	ready() {
-		if (this.pad.body == undefined)
-			return setTimeout(this.ready.bind(this), 100);
+	ready(): void {
+		if (!this.pad?.body) {
+			setTimeout(this.ready.bind(this), 100);
+			return;
+		}
 
 		this.dropGroup = this.physics.add.group({
 			bounceX: 1,
@@ -81,7 +95,6 @@ export default class Game extends Phaser.Scene {
 		);
 
 		this.pad.body.immovable = true;
-		this.pad.body.allowGravity = false;
 		this.pad.body.setSize(this.pad.width, this.pad.height, true);
 		this.physics.add.collider(
 			this.pad,
@@ -102,10 +115,9 @@ export default class Game extends Phaser.Scene {
 				.setStrokeStyle(2, 0xff0ff);
 	}
 
-	update(time, delta) {
-		for (let drop of this.droppersArray) {
+	update() {
+		for (const drop of this.droppersArray) {
 			if (!drop.active) continue;
-
 			drop.update();
 		}
 	}
@@ -114,14 +126,16 @@ export default class Game extends Phaser.Scene {
 		console.debug("Tidying scores");
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		const scores = this.scores;
-		const update = scores.filter((v) => v.when > expiry);
+		const update = scores.filter((v: Score) => v.when > expiry);
 		localStorage.setItem("scores", JSON.stringify(update));
 		console.debug("Tidy scores complete");
 	}
 
 	start() {
+		if (!this.pad) return;
+
 		this.active = true;
-		this.droppers = {};
+		this.droppers.clear();
 		this.droppersArray = [];
 		this.winner = null;
 		this.pad.x = Math.floor(
@@ -129,7 +143,7 @@ export default class Game extends Phaser.Scene {
 				Math.random() * (constants.SCREEN_WIDTH - this.pad.width),
 		);
 
-		if (hs.debug) this.rect.x = this.pad.x;
+		if (hs.debug && this.rect) this.rect.x = this.pad.x;
 
 		this.pad.setVisible(true);
 		console.debug(`Pad X Position: ${this.pad.x}`);
@@ -138,10 +152,10 @@ export default class Game extends Phaser.Scene {
 	end() {
 		this.active = false;
 		this.queue = false;
-		this.droppersQueue = {};
-		this.pad.setVisible(false);
+		this.droppersQueue.clear();
+		this.pad?.setVisible(false);
 
-		for (let drop of this.droppersArray) drop.container.destroy();
+		for (const drop of this.droppersArray) drop.container.destroy();
 	}
 
 	resetTimer() {
@@ -152,37 +166,52 @@ export default class Game extends Phaser.Scene {
 	resolveQueue() {
 		this.start();
 		twitch.say(hs.channel, "Let's goooooooooooo! PogChamp");
+		const enumKeys = this.droppersQueue.keys();
+		let next: IteratorResult<string, Avatar>;
 
-		for (let dropper of Object.keys(this.droppersQueue))
-			emitter.emit("drop", dropper, true);
+		while ((next = enumKeys.next())) {
+			if (next.done) break;
+			emitter.emit("drop", next.value, true);
+		}
 	}
 
-	crash(a, b) {
-		for (let container of [a, b])
-			container.body.velocity.y =
+	crash(
+		a: Phaser.Types.Physics.Arcade.GameObjectWithBody | Tilemaps.Tile,
+		b: Phaser.Types.Physics.Arcade.GameObjectWithBody | Tilemaps.Tile,
+	) {
+		if (a instanceof Tilemaps.Tile || b instanceof Tilemaps.Tile) return;
+
+		for (const container of [a, b])
+			container.body!.velocity.y =
 				-1 * (Math.random() * constants.BUMP_MIN + constants.BUMP_SPREAD);
 	}
 
-	landOnPad(pad, drop) {
-		if (!drop.body.touching.down || !pad.body.touching.up) return;
+	landOnPad(
+		padObj: Phaser.Types.Physics.Arcade.GameObjectWithBody | Tilemaps.Tile,
+		dropObj: Phaser.Types.Physics.Arcade.GameObjectWithBody | Tilemaps.Tile,
+	) {
+		const pad = padObj as Phaser.Types.Physics.Arcade.GameObjectWithBody;
+		const drop = dropObj as Phaser.Types.Physics.Arcade.GameObjectWithBody;
 
-		const halfPad = Math.ceil(pad.width / 2);
-		const halfDrop = Math.ceil(drop.width / 2);
-		const total = halfPad + halfDrop;
-		const pos = Math.abs(drop.x - pad.x);
-		const score = ((total - pos) / total) * 100;
-		const avatar = drop.avatar;
+		if (!pad.body!.touching.up) return;
+
+		const avatar = drop.getData("avatar") as Avatar;
+		const pos = Math.abs(avatar.container.x - this.pad!.x);
+		const halfWidth = this.pad!.body!.halfWidth;
+		const score = ((halfWidth - pos) / halfWidth) * 100;
 
 		if (score < 0) {
-			drop.body.x += -drop.body.velocity.x;
+			//drop.body.x += -drop.body.velocity.x;
 			drop.body.velocity.x *= -1;
 			return;
 		}
 
 		this.resetTimer();
+		avatar.swayTween?.stop();
+		avatar.swayTween = null;
 		avatar.score = score;
 		drop.body.enable = false;
-		this.dropGroup.remove(drop);
+		this.dropGroup!.remove(drop);
 		avatar.active = false;
 		avatar.chute.visible = false;
 		avatar.sprite.angle = 0;
@@ -202,30 +231,30 @@ export default class Game extends Phaser.Scene {
 
 		avatar.container.setDepth(1);
 		this.winner = avatar;
-		avatar.scoreLabel.text = avatar.score.toFixed(2);
-		avatar.scoreLabel.setVisible(true);
+		avatar.scoreLabel!.text = avatar.score.toFixed(2);
+		avatar.scoreLabel!.setVisible(true);
 	}
 
 	// events
 
-	onDrop(username, queue = false) {
+	onDrop(username: string, queue = false) {
 		if (!this.active && !this.queue) this.start();
 		else if (this.active && this.queue && !queue) return;
 
-		if (this.queue && !queue && this.droppersQueue.hasOwnProperty(username)) {
+		if (this.queue && !queue && this.droppersQueue.has(username)) {
 			return;
-		} else if (!this.queue && this.droppers.hasOwnProperty(username)) return;
+		} else if (!this.queue && this.droppers.has(username)) return;
 
 		if (this.queue && !queue) {
-			this.droppersQueue[username] = true;
+			this.droppersQueue.add(username);
 			return;
 		}
 
 		clearTimeout(this.endTimer);
 		const avatar = new Avatar(username, this);
-		this.droppers[username] = avatar;
+		this.droppers.set(username, avatar);
 		this.droppersArray.push(avatar);
-		this.dropGroup.add(avatar.container);
+		this.dropGroup!.add(avatar.container);
 	}
 
 	onDropLow() {
@@ -236,7 +265,7 @@ export default class Game extends Phaser.Scene {
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		let lowest = new Score(null, 101);
 
-		for (let score of scores) {
+		for (const score of scores) {
 			if (score.when < expiry) continue;
 
 			if (score.score < lowest.score) lowest = score;
@@ -253,26 +282,29 @@ export default class Game extends Phaser.Scene {
 	onDropRecent() {
 		const scores = this.scores;
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
-		const recent = {};
+		const recent = new Map<string, Score>();
 		let tracking = 0;
 		let oldest = new Score(null, 0, 0);
 
-		for (let score of scores) {
+		for (const score of scores) {
 			if (score.when < expiry) continue;
 
-			if (recent.hasOwnProperty(score.username)) {
-				if (recent[score.username].when < score.when)
-					recent[score.username] = score;
+			if (recent.has(score.username)) {
+				if (recent.get(score.username)?.when ?? 0 < score.when)
+					recent.set(score.username, score);
 			} else if (
 				tracking < constants.RECENT_SCORES ||
 				score.when > oldest.when
 			) {
-				if (tracking >= constants.RECENT_SCORES) delete recent[oldest.username];
-				else tracking++;
+				if (tracking >= constants.RECENT_SCORES && oldest.username) {
+					recent.delete(oldest.username);
+				} else {
+					tracking++;
+				}
 
 				if (score.when > oldest.when) oldest = score;
 
-				recent[score.username] = score;
+				recent.set(score.username, score);
 			}
 		}
 
@@ -292,7 +324,7 @@ export default class Game extends Phaser.Scene {
 		const expiry = Date.now() - constants.TWENTY_FOUR_HOURS;
 		let highest = new Score(null, 0);
 
-		for (let score of scores) {
+		for (const score of scores) {
 			if (score.when < expiry) continue;
 
 			if (score.score > highest.score) highest = score;
@@ -306,31 +338,34 @@ export default class Game extends Phaser.Scene {
 		);
 	}
 
-	onClearScores(who) {
+	onClearScores(who: string[]) {
 		if (!who) {
 			localStorage.clear();
 			twitch.say(hs.channel, "Scores cleared.");
 		} else {
 			const update = this.scores.filter(
-				(v) => !who.includes(v.username.toLowerCase()),
+				(v: Score) => v.username && !who.includes(v.username.toLowerCase()),
 			);
 			localStorage.setItem("scores", JSON.stringify(update));
 			twitch.say(hs.channel, `Scores cleared for ${who.join(", ")}.`);
 		}
 	}
 
-	onLose(avatar) {
+	onLose(avatar: Avatar) {
 		this.resetTimer();
-		avatar.container.body.enable = false;
-		avatar.chute.visible = false;
+		(avatar.container.body as Phaser.Physics.Arcade.Body).enable = false;
 		avatar.active = false;
-		avatar.label.destroy();
+		avatar.chute.visible = false;
+		avatar.container.setActive(false);
+		avatar.label?.destroy();
 		avatar.label = null;
-		avatar.sprite.angle = 0;
-		avatar.sprite.setAlpha(0.25);
 		avatar.scoreLabel?.destroy();
 		avatar.scoreLabel = null;
-		this.dropGroup.remove(avatar.container);
+		avatar.sprite.angle = 0;
+		avatar.sprite.setAlpha(0.25);
+		avatar.swayTween?.stop();
+		avatar.swayTween = null;
+		this.dropGroup?.remove(avatar.container);
 	}
 
 	onQueueDrop(delay = null) {
