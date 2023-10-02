@@ -32,18 +32,12 @@ your Twitch account. Fill out and submit the _Overlay URL builder_ form. Copy
 the URL from your browser and add it as a browser source in your streaming
 software of choice.
 
-### Optional URL parameters
+### Configuration
 
 There are several options you can play with that are exposed as optional URL
-hash parameters. For each one of these, be sure you separate the new key/value
-combination from the existing URL with a '&' character. For example, if your
-original URL was this:
-
-`https://haliphax.github.io/drop-game/#username=haliphax&channel=haliphax&oauth=MYTOKEN`
-
-Your updated URL for setting the `foobar` option to `100` would look like this:
-
-`https://haliphax.github.io/drop-game/#username=haliphax&channel=haliphax&oauth=MYTOKEN&foobar=100`
+hash parameters. Each of these (except for `demo`) is configurable from the
+_Overlay URL builder_ form you are presented with during the OAuth flow after
+logging into Twitch and authorizing the app.
 
 | Key             | Default   | Description                                                                               |
 | --------------- | --------- | ----------------------------------------------------------------------------------------- |
