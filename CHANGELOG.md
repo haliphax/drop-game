@@ -1,3 +1,13 @@
+# [v2.0.1](https://github.com/haliphax/drop-game/compare/v2.0.0...v2.0.1) (2023-10-02)
+
+## 🐛 Bug Fixes
+- [`2502df5`](https://github.com/haliphax/drop-game/commit/2502df5)  point directly to index.html with oauth form
+
+# [v2.0.1](https://github.com/haliphax/drop-game/compare/v2.0.0...v2.0.1) (2023-10-02)
+
+## 🐛 Bug Fixes
+- [`2502df5`](https://github.com/haliphax/drop-game/commit/2502df5)  point directly to index.html with oauth form
+
 # Changelog
 
 <a name="2.0.0"></a>
@@ -174,5 +184,3 @@
 - 🩹 don&#x27;t check for collision with ceiling [[df2e449](https://github.com/haliphax/drop-game/commit/df2e44954911036b2727a42ac5df02791e02eb80)]
 - 🩹 use constants for dimensions when instantiating game [[fbdf712](https://github.com/haliphax/drop-game/commit/fbdf712daa02a60c6432d1e6c88a088e49638c24)]
 - 🩹 ignore tmi.min.js in new folder [[399d5ce](https://github.com/haliphax/drop-game/commit/399d5ce358877a6688437c47d85786ea9125b161)]
-
-
