@@ -32,7 +32,7 @@
 	"engines": {
 		"node": "^18.16.0"
 	},
-	"name": "hexcrawl",
+	"name": "drop-game",
 	"prettier": {
 		"plugins": [
 			"prettier-plugin-organize-imports",
