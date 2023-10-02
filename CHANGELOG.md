@@ -1,3 +1,12 @@
+# [v2.1.0](https://github.com/haliphax/drop-game/compare/v2.0.0...v2.1.0) (2023-10-02)
+
+## ✨ New Features
+- [`53054b1`](https://github.com/haliphax/drop-game/commit/53054b1)  add config options to overlay builder 
+
+## 🐛 Bug Fixes
+- [`2502df5`](https://github.com/haliphax/drop-game/commit/2502df5)  point directly to index.html with oauth form 
+- [`6699127`](https://github.com/haliphax/drop-game/commit/6699127)  fix oauth flow
+
 # [v2.0.1](https://github.com/haliphax/drop-game/compare/v2.0.0...v2.0.1) (2023-10-02)
 
 ## 🐛 Bug Fixes
