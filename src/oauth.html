@@ -9,17 +9,53 @@
 	</head>
 	<body>
 		<h1>Overlay URL builder</h1>
-		<p>
-			Use this form to construct your overlay URL. <code>Channel</code> should
-			be your Twitch username, and <code>Bot username</code> should be the
-			username of the account your token is authorized for. (Most likely, that's
-			<em>your</em> username unless you have a separate bot account.)
-		</p>
+		<p>Use this form to construct your overlay URL.</p>
 		<p>
 			After submitting the form, you will be taken to the live overlay. Copy the
 			URL from your browser for use in your streaming software (e.g. OBS).
 		</p>
 		<form action="index.html">
+			<fieldset>
+				<legend>Options</legend>
+				<p>
+					<label for="gravity">Gravity (downward velocity):</label>
+					<br />
+					<input type="number" id="gravity" placeholder="400" />
+					<br />
+					<small>
+						The velocity value of downward force on sprite objects.
+					</small>
+				</p>
+				<p>
+					<label for="gravity_chute">Gravity with parachute:</label>
+					<br />
+					<input type="number" id="gravity_chute" placeholder="60" />
+					<br />
+					<small>
+						The gravity applied to sprites once their parachute is open.
+					</small>
+				</p>
+				<p>
+					<label for="max_velocity">Maximum velocity</label>
+					<br />
+					<input type="number" id="max_velocity" placeholder="600" />
+					<br />
+					<small>
+						The upper threshold for a sprite's random initial horizontal
+						velocity.
+					</small>
+				</p>
+				<p>
+					<label for="wait">Wait:</label>
+					<br />
+					<input type="number" id="wait" placeholder="60" />
+					<br />
+					<small>
+						The number of seconds to wait (after the last drop has landed)
+						before resetting the game.
+					</small>
+				</p>
+			</fieldset>
 			<p>
 				<button type="submit">Go!</button>
 			</p>

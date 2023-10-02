@@ -10,7 +10,16 @@ const user = await fetch("https://api.twitch.tv/helix/users", {
 	.then((r) => r.json())
 	.then((j) => j.data[0]);
 
-window.location.href = window.location.href.replace(
-	/\/oauth(?:\/index\.html)?.*$/i,
-	`#oauth=${hs.access_token}&channel=${user.login}`,
-);
+const form = document.querySelector("form")!;
+
+form.action += `#oauth=${hs.access_token}&channel=${user.login}`;
+form.addEventListener("submit", () => {
+	// options
+	["gravity", "gravity_chute", "max_velocity", "wait"].forEach((option) => {
+		const value = (document.getElementById(option)! as HTMLInputElement).value;
+
+		if (value) {
+			form.action += `&${option}=${encodeURIComponent(value)}`;
+		}
+	});
+});
