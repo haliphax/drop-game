@@ -61,6 +61,13 @@ export default class Game extends Phaser.Scene {
 		this.load.image("drop4", "drop4.png");
 		this.load.image("drop5", "drop5.png");
 		this.load.image("pad", "pad.png");
+		/*
+		this.load.setBaseURL();
+		this.load.image(
+			"emotesv2_ffbe3ae7fb2e47bbafa9d9557bb117ed",
+			"https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_ffbe3ae7fb2e47bbafa9d9557bb117ed/default/dark/3.0",
+		);
+		*/
 	}
 
 	create() {
@@ -237,7 +244,7 @@ export default class Game extends Phaser.Scene {
 
 	// events
 
-	onDrop(username: string, queue = false) {
+	onDrop(username: string, queue = false, emote?: string) {
 		if (!this.active && !this.queue) this.start();
 		else if (this.active && this.queue && !queue) return;
 
@@ -251,10 +258,27 @@ export default class Game extends Phaser.Scene {
 		}
 
 		clearTimeout(this.endTimer);
-		const avatar = new Avatar(username, this);
-		this.droppers.set(username, avatar);
-		this.droppersArray.push(avatar);
-		this.dropGroup!.add(avatar.container);
+
+		const finish = () => {
+			const avatar = new Avatar(username, this, emote);
+			this.droppers.set(username, avatar);
+			this.droppersArray.push(avatar);
+			this.dropGroup!.add(avatar.container);
+		};
+
+		if (emote) {
+			const emoteUrl = `https://static-cdn.jtvnw.net/emoticons/v2/${emote}/default/dark/3.0`;
+
+			this.load.setBaseURL();
+			this.load
+				.image(emote, emoteUrl)
+				.on(`filecomplete-image-${emote}`, () => finish())
+				.start();
+
+			return;
+		}
+
+		finish();
 	}
 
 	onDropLow() {

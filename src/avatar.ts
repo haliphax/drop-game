@@ -8,31 +8,33 @@ export default class Avatar {
 	chute: Phaser.GameObjects.Image;
 	chuteGravity: integer;
 	container: Phaser.GameObjects.Container;
+	customImage = false;
 	label: Phaser.GameObjects.Text | null;
 	rect?: Phaser.GameObjects.Rectangle;
 	score: integer;
 	scoreLabel: Phaser.GameObjects.Text | null;
 	sprite: Phaser.GameObjects.Image;
-	spriteNumber: integer;
 	swayTween: Tweens.Tween | null = null;
 	username: string;
 
-	constructor(username: string, game: Phaser.Scene) {
+	constructor(username: string, game: Phaser.Scene, emote?: string) {
 		this.username = username;
 		this.chute = game.add
 			.image(0, 0, "chute")
 			.setOrigin(0.5, 1)
 			.setVisible(false);
-		/*
-		this.chute.angle =
-			Math.random() * constants.MAX_SWAY * (Math.random() < 0.5 ? -1 : 1);
-		*/
 		this.chuteGravity = parseInt(hs.gravity_chute || constants.GRAVITY_CHUTE);
-		this.spriteNumber = Math.ceil(Math.random() * constants.NUM_SPRITES);
-		this.sprite = game.add
-			.image(0, 0, `drop${this.spriteNumber}`)
-			.setOrigin(0.5, 0.5)
-			.setVisible(false);
+
+		if (emote) {
+			this.customImage = true;
+			this.sprite = game.add.image(0, 0, emote);
+			this.sprite.setDisplaySize(64, 64);
+		} else {
+			const spriteNumber = Math.ceil(Math.random() * constants.NUM_SPRITES);
+			this.sprite = game.add.image(0, 0, `drop${spriteNumber}`);
+		}
+
+		this.sprite.setOrigin(0.5, 0.5).setVisible(false);
 		this.label = game.add
 			.text(0, -(this.sprite.height / 2) - constants.LABEL_SIZE, username, {
 				fontFamily: `"${constants.FONT_FAMILY}"`,

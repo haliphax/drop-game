@@ -61,9 +61,16 @@ twitch.on(
 					`@${tags.username} -> Drop game commands: https://github.com/haliphax/drop-game/blob/main/README.md#commands`,
 				);
 				break;
-			case "drop":
-				emitter.emit("drop", tags["display-name"]);
+			case "drop": {
+				let emote: string | undefined = undefined;
+
+				if (tags.emotes) {
+					emote = Object.keys(tags.emotes)[0];
+				}
+
+				emitter.emit("drop", tags["display-name"], false, emote);
 				break;
+			}
 			case "droplow":
 				emitter.emit("droplow");
 				break;
