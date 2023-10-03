@@ -56,14 +56,16 @@ export default class Avatar {
 		this.active = true;
 		this.container = game.add.container();
 		this.container.setData("avatar", this);
+		this.container.setSize(this.sprite.displayWidth, this.sprite.displayHeight);
 		game.physics.world.enableBody(this.container);
 
-		if (hs.debug)
+		if (hs.debug) {
 			this.rect = game.add
 				.rectangle(0, 0, 0, 0)
 				.setStrokeStyle(2, 0xff00ff)
-				.setOrigin(0.5, 0.5)
+				.setOrigin(0, 0)
 				.setDepth(1);
+		}
 
 		setTimeout(this.ready.bind(this), 100);
 	}
@@ -83,10 +85,8 @@ export default class Avatar {
 
 		body.pushable = true;
 		body.velocity.x = velocity;
-		body.setSize(this.sprite.width, this.sprite.height, true);
-		this.container.setSize(this.sprite.width, this.sprite.height);
-
-		if (hs.debug) this.rect?.setSize(body.width, body.height);
+		body.setSize(this.sprite.displayWidth, this.sprite.displayHeight, true);
+		this.rect?.setSize(body.width, body.height);
 
 		this.container.x = Math.floor(
 			this.sprite.width / 2 +
@@ -107,9 +107,11 @@ export default class Avatar {
 
 		const body = this.container.body as Phaser.Physics.Arcade.Body;
 
+		this.container.angle = 0;
+		body.angle = 0;
+
 		if (hs.debug && this.rect) {
 			this.rect.setPosition(body.x, body.y);
-			this.rect.angle = body.angle;
 		}
 
 		if (
@@ -143,6 +145,5 @@ export default class Avatar {
 		}
 
 		this.sprite.angle = this.chute.angle;
-		this.container.angle = 0;
 	}
 }
