@@ -1,3 +1,11 @@
+# [v2.2.0](https://github.com/haliphax/drop-game/compare/v2.1.0...v2.2.0) (2023-10-03)
+
+## ✨ New Features
+- [`7c1def1`](https://github.com/haliphax/drop-game/commit/7c1def1)  emote parameter for !drop command 
+
+## 🐛 Bug Fixes
+- [`3db185c`](https://github.com/haliphax/drop-game/commit/3db185c)  fix collision box for scaled emotes
+
 # [v2.1.0](https://github.com/haliphax/drop-game/compare/v2.0.0...v2.1.0) (2023-10-02)
 
 ## ✨ New Features
