@@ -1,11 +1,11 @@
 body {
 	background-color: rgba(95, 95, 95, 0);
-	height: 1080px;
+	height: 100vh;
 	margin: 0;
-	min-height: 1080px;
+	min-height: 100vh;
 	overflow: hidden;
 	padding: 0;
-	width: 1920px;
+	width: 100vw;
 }
 
 body.demo {

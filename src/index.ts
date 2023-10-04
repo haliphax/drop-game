@@ -26,6 +26,10 @@ new PhaserGame({
 	render: {
 		transparent: true,
 	},
+	scale: {
+		autoCenter: Phaser.Scale.CENTER_BOTH,
+		mode: Phaser.Scale.FIT,
+	},
 	scene: [Game],
 	type: Phaser.AUTO,
 	width: constants.SCREEN_WIDTH,
