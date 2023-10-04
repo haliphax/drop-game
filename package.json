@@ -44,7 +44,7 @@
 		"build": "vite build src --sourcemap --emptyOutDir --outDir ../dist",
 		"start": "tsx src/server.ts"
 	},
-	"version": "2.4.0",
+	"version": "2.4.1",
 	"dependencies": {
 		"tmi.js": "^1.8.5",
 		"webfontloader": "^1.6.28"

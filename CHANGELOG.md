@@ -1,3 +1,8 @@
+# [v2.4.1](https://github.com/haliphax/drop-game/compare/v2.4.0...v2.4.1) (2023-10-04)
+
+## 🐛 Bug Fixes
+- [`02cbf15`](https://github.com/haliphax/drop-game/commit/02cbf15)  fix missing username in twitch irc login
+
 # [v2.4.0](https://github.com/haliphax/drop-game/compare/v2.3.0...v2.4.0) (2023-10-04)
 
 ## ✨ New Features
