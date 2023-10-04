@@ -118,8 +118,18 @@ export default class Avatar {
 		}
 
 		if (this.chute.visible) {
-			if (this.container.body.velocity.y > this.chuteGravity)
+			if (this.container.body.velocity.y > this.chuteGravity) {
 				this.container.body.velocity.y = this.chuteGravity;
+
+				if (this.swayTween!.paused) {
+					this.swayTween!.resume();
+				}
+			} else if (
+				this.container.body.velocity.y < this.chuteGravity &&
+				!this.swayTween!.paused
+			) {
+				this.swayTween!.pause();
+			}
 		} else if (body.y >= this.sprite.height) {
 			this.swayTween = this.sprite.scene.add.tween({
 				duration: 2000,
