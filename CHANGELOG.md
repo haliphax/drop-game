@@ -1,3 +1,8 @@
+# [v2.3.0](https://github.com/haliphax/drop-game/compare/v2.2.0...v2.3.0) (2023-10-04)
+
+## ✨ New Features
+- [`d298e0f`](https://github.com/haliphax/drop-game/commit/d298e0f)  reduce horizontal speed when bumping into wall
+
 # [v2.2.0](https://github.com/haliphax/drop-game/compare/v2.1.0...v2.2.0) (2023-10-03)
 
 ## ✨ New Features
