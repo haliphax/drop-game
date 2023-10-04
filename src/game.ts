@@ -92,7 +92,13 @@ export default class Game extends Phaser.Scene {
 		this.physics.world.on(
 			Phaser.Physics.Arcade.Events.WORLD_BOUNDS,
 			(obj: Phaser.Physics.Arcade.Body, _up: boolean, down: boolean) => {
-				if (!down) return;
+				// "bounce" off the walls
+				if (!down) {
+					obj.velocity.y =
+						-1 * (Math.random() * constants.BUMP_MIN + constants.BUMP_SPREAD);
+					return;
+				}
+
 				const avatar = obj.gameObject.getData("avatar") as Avatar;
 				emitter.emit("lose", avatar);
 			},
