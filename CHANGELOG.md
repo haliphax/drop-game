@@ -1,3 +1,11 @@
+# [v2.4.0](https://github.com/haliphax/drop-game/compare/v2.3.0...v2.4.0) (2023-10-04)
+
+## ✨ New Features
+- [`7fddc19`](https://github.com/haliphax/drop-game/commit/7fddc19)  scale to fit screen 
+
+## 🐛 Bug Fixes
+- [`7584dce`](https://github.com/haliphax/drop-game/commit/7584dce)  fix avatar bounce
+
 # [v2.3.0](https://github.com/haliphax/drop-game/compare/v2.2.0...v2.3.0) (2023-10-04)
 
 ## ✨ New Features
