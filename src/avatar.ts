@@ -76,7 +76,9 @@ export default class Avatar {
 		}
 
 		const body = this.container.body as Phaser.Physics.Arcade.Body;
-		body.setCollideWorldBounds(true, 0.9, 0, true);
+		body.setBounce(0.9, 0);
+		body.collideWorldBounds = true;
+		body.onWorldBounds = true;
 
 		const direction = Math.random() < 0.5 ? -1 : 1;
 		const velocity =
