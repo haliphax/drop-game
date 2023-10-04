@@ -1,6 +1,5 @@
 import { Tweens } from "phaser";
 import constants from "./constants";
-import emitter from "./emitter";
 import { hs } from "./util";
 
 export default class Avatar {
@@ -10,7 +9,7 @@ export default class Avatar {
 	container: Phaser.GameObjects.Container;
 	customImage = false;
 	label: Phaser.GameObjects.Text | null;
-	rect?: Phaser.GameObjects.Rectangle;
+	rect?: Phaser.GameObjects.Rectangle | null;
 	score: integer;
 	scoreLabel: Phaser.GameObjects.Text | null;
 	sprite: Phaser.GameObjects.Image;
@@ -77,6 +76,8 @@ export default class Avatar {
 		}
 
 		const body = this.container.body as Phaser.Physics.Arcade.Body;
+		body.setCollideWorldBounds(true, 0.9, 0, true);
+
 		const direction = Math.random() < 0.5 ? -1 : 1;
 		const velocity =
 			Math.random() *
@@ -112,13 +113,6 @@ export default class Avatar {
 
 		if (hs.debug && this.rect) {
 			this.rect.setPosition(body.x, body.y);
-		}
-
-		if (
-			this.container.y + Math.ceil(this.container.height / 2) >=
-			constants.SCREEN_HEIGHT
-		) {
-			return emitter.emit("lose", this);
 		}
 
 		if (this.chute.visible) {

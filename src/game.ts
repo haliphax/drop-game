@@ -42,7 +42,7 @@ export default class Game extends Phaser.Scene {
 		emitter.on("resetdrop", this.onResetDrop, this);
 		emitter.on("startdrop", this.onStartDrop, this);
 
-		setTimeout(this.tidyScores.bind(this), constants.TIDY_SCHEDULE);
+		setInterval(this.tidyScores.bind(this), constants.TIDY_SCHEDULE);
 		this.tidyScores();
 	}
 
@@ -61,13 +61,6 @@ export default class Game extends Phaser.Scene {
 		this.load.image("drop4", "drop4.png");
 		this.load.image("drop5", "drop5.png");
 		this.load.image("pad", "pad.png");
-		/*
-		this.load.setBaseURL();
-		this.load.image(
-			"emotesv2_ffbe3ae7fb2e47bbafa9d9557bb117ed",
-			"https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_ffbe3ae7fb2e47bbafa9d9557bb117ed/default/dark/3.0",
-		);
-		*/
 	}
 
 	create() {
@@ -80,8 +73,7 @@ export default class Game extends Phaser.Scene {
 			.setOrigin(0.5, 1)
 			.setVisible(false)
 			.setPosition(0, constants.SCREEN_HEIGHT);
-
-		setTimeout(this.ready.bind(this), 100);
+		this.ready();
 	}
 
 	ready(): void {
@@ -90,15 +82,20 @@ export default class Game extends Phaser.Scene {
 			return;
 		}
 
-		this.dropGroup = this.physics.add.group({
-			bounceX: 1,
-			bounceY: 1,
-			collideWorldBounds: true,
-		});
+		this.dropGroup = this.physics.add.group();
 		this.physics.add.collider(
 			this.dropGroup,
 			this.dropGroup,
 			this.crash.bind(this),
+		);
+
+		this.physics.world.on(
+			Phaser.Physics.Arcade.Events.WORLD_BOUNDS,
+			(obj: Phaser.Physics.Arcade.Body, _up: boolean, down: boolean) => {
+				if (!down) return;
+				const avatar = obj.gameObject.getData("avatar") as Avatar;
+				emitter.emit("lose", avatar);
+			},
 		);
 
 		this.pad.body.immovable = true;
@@ -117,16 +114,21 @@ export default class Game extends Phaser.Scene {
 					this.pad.body.width,
 					this.pad.body.height,
 				)
-				.setOrigin(0.5, 0)
+				.setOrigin(0.5, 1)
 				.setDepth(1)
-				.setStrokeStyle(2, 0xff0ff);
+				.setStrokeStyle(2, 0xff0ff)
+				.setVisible(false);
 	}
 
 	update() {
+		if (!this.active) return;
+
 		for (const drop of this.droppersArray) {
 			if (!drop.active) continue;
 			drop.update();
 		}
+
+		this.rect?.setPosition(this.pad?.x, this.pad?.y);
 	}
 
 	tidyScores() {
@@ -150,9 +152,10 @@ export default class Game extends Phaser.Scene {
 				Math.random() * (constants.SCREEN_WIDTH - this.pad.width),
 		);
 
-		if (hs.debug && this.rect) this.rect.x = this.pad.x;
-
 		this.pad.setVisible(true);
+
+		if (hs.debug) this.rect?.setVisible(true);
+
 		console.debug(`Pad X Position: ${this.pad.x}`);
 	}
 
@@ -161,8 +164,12 @@ export default class Game extends Phaser.Scene {
 		this.queue = false;
 		this.droppersQueue.clear();
 		this.pad?.setVisible(false);
+		this.rect?.setVisible(false);
 
-		for (const drop of this.droppersArray) drop.container.destroy();
+		for (const drop of this.droppersArray) {
+			drop.rect?.destroy();
+			drop.container.destroy();
+		}
 	}
 
 	resetTimer() {
@@ -383,6 +390,7 @@ export default class Game extends Phaser.Scene {
 		avatar.container.setActive(false);
 		avatar.label?.destroy();
 		avatar.label = null;
+		avatar.rect?.setVisible(false);
 		avatar.scoreLabel?.destroy();
 		avatar.scoreLabel = null;
 		avatar.sprite.angle = 0;
