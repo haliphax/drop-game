@@ -211,7 +211,8 @@ export default class Game extends Phaser.Scene {
 
 		const avatar = drop.getData("avatar") as Avatar;
 		const pos = Math.abs(avatar.container.x - this.pad!.x);
-		const halfWidth = this.pad!.body!.halfWidth;
+		const halfWidth =
+			this.pad!.body!.halfWidth + Math.round(avatar.container!.width / 2);
 		const score = ((halfWidth - pos) / halfWidth) * 100;
 
 		if (score < 0) {
