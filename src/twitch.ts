@@ -5,7 +5,7 @@ const twitch = new tmi.Client({
 	options: { debug: true },
 	channels: [hs.channel],
 	identity: {
-		username: hs.username,
+		username: hs.channel,
 		password: `oauth:${hs.oauth}`,
 	},
 });
