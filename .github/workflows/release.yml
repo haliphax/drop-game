@@ -24,4 +24,4 @@ jobs:
       - name: semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
-        run: npx semantic-release -r git@github.com:haliphax/narf.git
+        run: npx semantic-release -r "$(git remote get-url origin)"
