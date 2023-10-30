@@ -1,3 +1,8 @@
+# [v2.5.0](https://github.com/haliphax/drop-game/compare/v2.4.1...v2.5.0) (2023-10-30)
+
+## ✨ New Features
+- [`f27c8c5`](https://github.com/haliphax/drop-game/commit/f27c8c5)  &quot;bounce&quot; off world boundary walls
+
 # [v2.4.1](https://github.com/haliphax/drop-game/compare/v2.4.0...v2.4.1) (2023-10-04)
 
 ## 🐛 Bug Fixes
