@@ -28,6 +28,7 @@ export default class Avatar {
 			this.customImage = true;
 			this.sprite = game.add.image(0, 0, emote);
 			this.sprite.setDisplaySize(64, 64);
+			this.chute.setOrigin(0.5, 0.75);
 		} else {
 			const spriteNumber = Math.ceil(Math.random() * constants.NUM_SPRITES);
 			this.sprite = game.add.image(0, 0, `drop${spriteNumber}`);
