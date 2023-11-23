@@ -1,3 +1,8 @@
+# [v2.6.0](https://github.com/haliphax/drop-game/compare/v2.5.0...v2.6.0) (2023-11-23)
+
+## ✨ New Features
+- [`be0ebf0`](https://github.com/haliphax/drop-game/commit/be0ebf0)  drop sound effect
+
 # [v2.5.0](https://github.com/haliphax/drop-game/compare/v2.4.1...v2.5.0) (2023-10-30)
 
 ## ✨ New Features
