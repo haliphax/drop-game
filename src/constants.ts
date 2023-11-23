@@ -13,10 +13,14 @@ const constants = {
 	GRAVITY_CHUTE: 30,
 	/** username label font size */
 	LABEL_SIZE: 20,
+	/** maximum wait (in ms) between queued drops */
+	MAX_QUEUE_BUFFER: 300,
 	/** maximum angle of sway */
 	MAX_SWAY: 25,
 	/** maximum random velocity */
 	MAX_VELOCITY: 600,
+	/** minimum wait (in ms) between queued drops */
+	MIN_QUEUE_BUFFER: 100,
 	/** number of sprites */
 	NUM_SPRITES: 5,
 	/** URL for obtaining OAuth token */

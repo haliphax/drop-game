@@ -4,7 +4,7 @@ import constants from "./constants";
 import emitter from "./emitter";
 import Score from "./score";
 import { twitch } from "./twitch";
-import { hs } from "./util";
+import { hs, sleep } from "./util";
 import WebFontFile from "./webfontfile";
 
 /** main game scene */
@@ -54,6 +54,7 @@ export default class Game extends Phaser.Scene {
 	preload() {
 		this.load.addFile(new WebFontFile(this.load, constants.FONT_FAMILY));
 		this.load.setBaseURL("./default");
+		this.load.audio("drop-sound", "drop.mp3");
 		this.load.image("chute", "chute.png");
 		this.load.image("drop1", "drop1.png");
 		this.load.image("drop2", "drop2.png");
@@ -183,7 +184,7 @@ export default class Game extends Phaser.Scene {
 		this.endTimer = setTimeout(this.end.bind(this), this.endWait);
 	}
 
-	resolveQueue() {
+	async resolveQueue() {
 		this.start();
 		twitch.say(hs.channel, "Let's goooooooooooo! PogChamp");
 		const enumKeys = this.droppersQueue.keys();
@@ -192,6 +193,11 @@ export default class Game extends Phaser.Scene {
 		while ((next = enumKeys.next())) {
 			if (next.done) break;
 			emitter.emit("drop", next.value, true);
+			await sleep(
+				Math.ceil(Math.random() * constants.MIN_QUEUE_BUFFER) +
+					constants.MAX_QUEUE_BUFFER -
+					constants.MIN_QUEUE_BUFFER,
+			);
 		}
 	}
 
@@ -278,6 +284,8 @@ export default class Game extends Phaser.Scene {
 			this.droppers.set(username, avatar);
 			this.droppersArray.push(avatar);
 			this.dropGroup!.add(avatar.container);
+			this.sound.stopByKey("drop-sound");
+			this.sound.play("drop-sound");
 		};
 
 		if (emote) {
@@ -407,7 +415,7 @@ export default class Game extends Phaser.Scene {
 		this.dropGroup?.remove(avatar.container);
 	}
 
-	onQueueDrop(delay = null) {
+	async onQueueDrop(delay = null) {
 		if (this.queue) {
 			twitch.say(hs.channel, "NotLikeThis A queue is already forming!");
 			return;
@@ -424,9 +432,9 @@ export default class Game extends Phaser.Scene {
 		this.end();
 	}
 
-	onStartDrop() {
+	async onStartDrop() {
 		if (!this.queue) return;
 
-		this.resolveQueue();
+		await this.resolveQueue();
 	}
 }

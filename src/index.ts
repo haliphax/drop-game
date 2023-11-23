@@ -12,6 +12,9 @@ if (!Object.hasOwnProperty.call(hs, "oauth"))
 if (hs.demo) document.body.classList.add("demo");
 
 new PhaserGame({
+	audio: {
+		disableWebAudio: true,
+	},
 	height: constants.SCREEN_HEIGHT,
 	physics: {
 		default: "arcade",

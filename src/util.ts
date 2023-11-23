@@ -6,4 +6,8 @@ const hs = Object.fromEntries(
 		.map((v) => v.split("=")) ?? [],
 );
 
-export { hs };
+/** awaitable sleep function */
+const sleep = async (ms: number) =>
+	new Promise((resolve) => setTimeout(resolve, ms));
+
+export { hs, sleep };
