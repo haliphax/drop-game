@@ -1,3 +1,8 @@
+# [v2.7.0](https://github.com/haliphax/drop-game/compare/v2.6.0...v2.7.0) (2023-11-30)
+
+## ✨ New Features
+- [`d791bdc`](https://github.com/haliphax/drop-game/commit/d791bdc)  land/win sound effects
+
 # [v2.6.0](https://github.com/haliphax/drop-game/compare/v2.5.0...v2.6.0) (2023-11-23)
 
 ## ✨ New Features
