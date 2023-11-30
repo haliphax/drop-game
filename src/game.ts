@@ -54,7 +54,9 @@ export default class Game extends Phaser.Scene {
 	preload() {
 		this.load.addFile(new WebFontFile(this.load, constants.FONT_FAMILY));
 		this.load.setBaseURL("./default");
-		this.load.audio("drop-sound", "drop.mp3");
+		this.load.audio("drop", "drop.mp3");
+		this.load.audio("land", "land.mp3");
+		this.load.audio("win", "win.mp3");
 		this.load.image("chute", "chute.png");
 		this.load.image("drop1", "drop1.png");
 		this.load.image("drop2", "drop2.png");
@@ -248,14 +250,19 @@ export default class Game extends Phaser.Scene {
 		scores.push(new Score(avatar.username, avatar.score));
 		localStorage.setItem("scores", JSON.stringify(scores));
 
-		if (this.winner && avatar.score < this.winner.score)
+		if (this.winner && avatar.score < this.winner.score) {
+			this.sound.stopByKey("land");
+			this.sound.play("land");
 			return emitter.emit("lose", avatar);
+		}
 
 		if (this.winner) {
 			emitter.emit("lose", this.winner);
 			this.winner.container.setDepth(0);
 		}
 
+		this.sound.stopByKey("win");
+		this.sound.play("win");
 		avatar.container.setDepth(1);
 		this.winner = avatar;
 		avatar.scoreLabel!.text = avatar.score.toFixed(2);
@@ -284,8 +291,8 @@ export default class Game extends Phaser.Scene {
 			this.droppers.set(username, avatar);
 			this.droppersArray.push(avatar);
 			this.dropGroup!.add(avatar.container);
-			this.sound.stopByKey("drop-sound");
-			this.sound.play("drop-sound");
+			this.sound.stopByKey("drop");
+			this.sound.play("drop");
 		};
 
 		if (emote) {
