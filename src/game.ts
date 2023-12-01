@@ -229,8 +229,8 @@ export default class Game extends Phaser.Scene {
 			this.pad!.body!.halfWidth + Math.round(avatar.container!.width / 2);
 		const score = ((halfWidth - pos) / halfWidth) * 100;
 
+		// horizontal overlap mid-frame but not a landing; bounce off
 		if (score < 0) {
-			drop.body.x += -drop.body.velocity.x;
 			drop.body.velocity.x *= -1;
 			return;
 		}
