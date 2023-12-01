@@ -11,6 +11,7 @@ import WebFontFile from "./webfontfile";
 export default class Game extends Phaser.Scene {
 	active: boolean;
 	dropGroup: Phaser.Physics.Arcade.Group | null;
+	droplets!: Phaser.GameObjects.Particles.ParticleEmitter;
 	droppers: Map<string, Avatar>;
 	droppersArray: Array<Avatar>;
 	droppersQueue: Set<string>;
@@ -64,6 +65,10 @@ export default class Game extends Phaser.Scene {
 		this.load.image("drop4", "drop4.png");
 		this.load.image("drop5", "drop5.png");
 		this.load.image("pad", "pad.png");
+		this.load.spritesheet("droplet", "droplet.png", {
+			frameHeight: 82,
+			frameWidth: 82,
+		});
 	}
 
 	create() {
@@ -76,6 +81,16 @@ export default class Game extends Phaser.Scene {
 			.setOrigin(0.5, 1)
 			.setVisible(false)
 			.setPosition(0, constants.SCREEN_HEIGHT);
+		this.droplets = this.add
+			.particles(0, 0, "droplet", {
+				blendMode: Phaser.BlendModes.ADD,
+				emitting: false,
+				gravityY: -500,
+				lifespan: 500,
+				scale: { start: 1, end: 0.2 },
+				speed: { random: [50, 150] },
+			})
+			.setDepth(1);
 		this.ready();
 	}
 
@@ -137,7 +152,7 @@ export default class Game extends Phaser.Scene {
 			drop.update();
 		}
 
-		this.rect?.setPosition(this.pad?.x, this.pad?.y);
+		this.rect?.setPosition(this.pad!.x, this.pad!.y);
 	}
 
 	tidyScores() {
@@ -235,6 +250,11 @@ export default class Game extends Phaser.Scene {
 			return;
 		}
 
+		this.droplets.emitParticleAt(
+			avatar.container.x,
+			avatar.container.y + avatar.sprite.height / 2,
+			20,
+		);
 		this.resetTimer();
 		avatar.swayTween?.stop();
 		avatar.swayTween = null;
