@@ -1,3 +1,8 @@
+# [v2.8.0](https://github.com/haliphax/drop-game/compare/v2.7.1...v2.8.0) (2023-12-01)
+
+## ✨ New Features
+- [`39861ba`](https://github.com/haliphax/drop-game/commit/39861ba)  droplets when landing on pad
+
 # [v2.7.1](https://github.com/haliphax/drop-game/compare/v2.7.0...v2.7.1) (2023-12-01)
 
 ## 🐛 Bug Fixes
