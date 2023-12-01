@@ -1,3 +1,8 @@
+# [v2.7.1](https://github.com/haliphax/drop-game/compare/v2.7.0...v2.7.1) (2023-12-01)
+
+## 🐛 Bug Fixes
+- [`4c94bc2`](https://github.com/haliphax/drop-game/commit/4c94bc2)  fix exaggerated bounce from horizontal overlap with pad
+
 # [v2.7.0](https://github.com/haliphax/drop-game/compare/v2.6.0...v2.7.0) (2023-11-30)
 
 ## ✨ New Features
