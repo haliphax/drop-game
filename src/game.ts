@@ -108,7 +108,7 @@ export default class Game extends Phaser.Scene {
 		);
 
 		this.pad.body.immovable = true;
-		this.pad.body.setSize(this.pad.width, this.pad.height, true);
+		this.pad.body.setSize(this.pad.width, this.pad.height - 10, true);
 		this.physics.add.collider(
 			this.pad,
 			this.dropGroup,
@@ -239,6 +239,11 @@ export default class Game extends Phaser.Scene {
 		avatar.swayTween?.stop();
 		avatar.swayTween = null;
 		avatar.score = score;
+		avatar.container.setY(
+			this.game.scale.gameSize.height -
+				this.pad!.body!.height -
+				avatar.sprite.height / 2,
+		);
 		drop.body.enable = false;
 		this.dropGroup!.remove(drop);
 		avatar.active = false;
