@@ -1,3 +1,8 @@
+# [v2.9.0](https://github.com/haliphax/drop-game/compare/v2.8.0...v2.9.0) (2023-12-08)
+
+## ✨ New Features
+- [`6d4f635`](https://github.com/haliphax/drop-game/commit/6d4f635)  use viewport dimensions for scene size
+
 # [v2.8.0](https://github.com/haliphax/drop-game/compare/v2.7.1...v2.8.0) (2023-12-01)
 
 ## ✨ New Features
