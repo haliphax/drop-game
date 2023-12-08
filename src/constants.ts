@@ -30,9 +30,9 @@ const constants = {
 	/** score label font size */
 	SCORE_SIZE: 26,
 	/** height of screen */
-	SCREEN_HEIGHT: 1080,
+	SCREEN_HEIGHT: window.innerHeight,
 	/** width of screen */
-	SCREEN_WIDTH: 1920,
+	SCREEN_WIDTH: window.innerWidth,
 	/** font stroke color */
 	STROKE_COLOR: "#000",
 	/** font stroke thickness */
