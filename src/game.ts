@@ -344,7 +344,7 @@ export default class Game extends Phaser.Scene {
 		let lowest = new Score(null, 101);
 
 		for (const score of scores) {
-			if (score.when < expiry) continue;
+			if (score.when < expiry || !score.username) continue;
 
 			if (score.score < lowest.score) lowest = score;
 		}
