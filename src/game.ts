@@ -173,7 +173,7 @@ export default class Game extends Phaser.Scene {
 		this.winner = null;
 		this.pad.x = Math.floor(
 			this.pad.width / 2 +
-			Math.random() * (constants.SCREEN_WIDTH - this.pad.width),
+				Math.random() * (constants.SCREEN_WIDTH - this.pad.width),
 		);
 
 		this.pad.setVisible(true);
@@ -212,8 +212,8 @@ export default class Game extends Phaser.Scene {
 			emitter.emit("drop", next.value, true);
 			await sleep(
 				Math.ceil(Math.random() * constants.MIN_QUEUE_BUFFER) +
-				constants.MAX_QUEUE_BUFFER -
-				constants.MIN_QUEUE_BUFFER,
+					constants.MAX_QUEUE_BUFFER -
+					constants.MIN_QUEUE_BUFFER,
 			);
 		}
 	}
@@ -261,8 +261,8 @@ export default class Game extends Phaser.Scene {
 		avatar.score = score;
 		avatar.container.setY(
 			this.game.scale.gameSize.height -
-			this.pad!.body!.height -
-			avatar.sprite.height / 2,
+				this.pad!.body!.height -
+				avatar.sprite.height / 2,
 		);
 		drop.body.enable = false;
 		this.dropGroup!.remove(drop);
@@ -351,7 +351,8 @@ export default class Game extends Phaser.Scene {
 
 		twitch.say(
 			hs.channel,
-			`ResidentSleeper Lowest score in the past 24 hours: ${lowest.username
+			`ResidentSleeper Lowest score in the past 24 hours: ${
+				lowest.username
 			} ${lowest.score.toFixed(2)}`,
 		);
 	}
@@ -418,7 +419,8 @@ export default class Game extends Phaser.Scene {
 
 		twitch.say(
 			hs.channel,
-			`Poooound Highest score in the past 24 hours: ${highest.username
+			`Poooound Highest score in the past 24 hours: ${
+				highest.username
 			} ${highest.score.toFixed(2)}`,
 		);
 	}
